@@ -1,48 +1,110 @@
-<div class="row">
-    <div class="col-md-12">
-        <h1>Do you see crop marks?</h1>
+<div align="center">
+  <div class="row">
+      <div class="col-md-12" align="right">
+          <p>
+            <span>You are now working on task:</span> <span id="task-id" class="label label-warning">#</span>
+          </p>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+          <h1>Do you see crop marks appearing?</h1>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+          <p>
+            <span>Click on the image to see changes across time.</span>
+          </p>
+          <div id="imagery-container">
+              <img id="imagery" src="https://i.imgur.com/GeHxzb7.png" style="max-width=100%">
+          </div>
+      </div>
+  </div>
+  <div class="row" style="padding-top:15px;">
+    <div class="col-md-12" align="center">
+      <button type="button" class="btn btn-primary btn-lg">Yes</button>
+      <button type="button" class="btn btn-secondary btn-lg">No</button>
+      <button type="button" class="btn btn-warning btn-lg">Bad Image</button>
     </div>
+  </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-      	<p>
-          <span>You are working now on task:</span> <span id="task-id" class="label label-warning">#</span>
-        </p>
-        <div id="imagery-container">
-            <img id="imagery" src="https://i.imgur.com/GeHxzb7.png" style="max-width=100%">
-        </a>
-    </div>
-</div>
-
 
 <script type="text/javascript">
 (function() {
-    // Your JavaScript code
-pybossa.taskLoaded(function(task, deferred) {
-    if (!$.isEmptyObject(task)) {
-        // load image from flickr
-        var img = $('<img />');
-        img.load(function() {
-            // continue as soon as the image is loaded
-            deferred.resolve(task);
-        });
-        img.attr('src', task.info.img_url).css('height', 500);
-        img.addClass('img-thumbnail img-responsive');
-        task.info.image = img;
-    }
-    else {
-        deferred.resolve(task);
-    }
-});
+  
+    pybossa.taskLoaded(function(task, deferred) {
+        if (!$.isEmptyObject(task)) {
 
-    pybossa.presentTask(function(task, deferred){
-      
-		if (!$.isEmptyObject(task)) {
-          $('#imagery-container').html('').append(task.info.image);
-          $('#task-id').html(task.id);
+            var USER_ID = 'XXXXX';
+            
+            // Build an image HTML element for each time in the time series.
+            for(var i=0; i<4; i++){
+                var img = $('<img class="imagery" id="imagery' + (i+1) + '" data-index="' + (i+1) + '" />');
+                img.load(function() {
+               
+                    // Continue as soon as the image is loaded.
+                    deferred.resolve(task);
+                });
+              
+                // Build image URL.
+                var imgUrlTimeNotSet = task.info.img_url.replace('USER_ID_TOKEN', USER_ID);
+                var imgUrl = imgUrlTimeNotSet.replace('TIME_TOKEN', task.info['time' + (i+1)]);
+              
+                // Set HTML properties.
+                img.attr('src', imgUrl).css('height', 500);
+                img.addClass('img-thumbnail img-responsive');
+                img.css('cursor', 'pointer');
+                 
+                // Only show the first one by default.
+                if(i != 0){
+                    img.css('display', 'none');
+                }else{
+                    img.css('display', 'block');
+                }
+              
+                task.info['image' + (i+1)] = img;
+            }
+        }
+        else {
+            deferred.resolve(task);
         }
     });
 
-    pybossa.run('testsatellite');
+    pybossa.presentTask(function(task, deferred){
+      
+        
+        if (!$.isEmptyObject(task)) {
+            // Clear HTML content of container (to remove default loading image).
+            $('#imagery-container').html('');
+      
+
+            $('#task-id').html(task.id);
+          
+            // Build an image HTML element for each time in the time series.
+            for(var i=0; i<4; i++){
+                $('#imagery-container').append(task.info['image' + (i+1)]);
+            }
+
+            // When clicking on the image, load the next image in the time series.
+            $('.imagery').click(function(){
+
+                // Hide currently displayed imagery.
+                var imageryIndex = parseInt($(this).data('index'));
+                $('#imagery' + imageryIndex).css('display', 'none');
+
+                // Reset if we just clicked on the last image of the time series.
+                if(imageryIndex == 4){
+                    imageryIndex = 0; 
+                }
+
+                // Show next image in the time series.
+                $('#imagery' + (imageryIndex+1)).css('display', 'block');
+
+            });
+        }
+    });
+
+    pybossa.run('XXXXX');
 })();
 </script>
