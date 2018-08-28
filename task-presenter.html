@@ -1,11 +1,29 @@
-<div align="center">
+<div style="text-align: center;">
   <div class="row">
-      <div class="col-md-12" align="right">
-          <p>
-            <span>You are now working on task:</span> <span id="task-id" class="label label-warning">#</span>
-          </p>
-      </div>
+    <div class="col-md-12" style="text-align: right;">
+      <p>
+        <span>You are now working on task:</span> <span id="task-id" class="label label-warning">#</span>
+      </p>
+    </div>
   </div>
+
+  <div class="row">
+    <!-- Success and Error Messages for the user. --> 
+    <div class="col-md-12" style="height:50px">
+      <div id="finish" class="alert alert-success" style="display:none;">
+        <strong>Congratulations!</strong> <span>You have contributed to all available tasks!</span>
+        <br/>
+        <div class="alert-actions">
+            <a class="btn small" href="/">Check out other projects</a>
+        </div>
+      </div>
+      <div id="error" class="alert alert-danger" style="display:none;">
+          <a class="close">×</a>
+          <strong>Error!</strong> Something went wrong, please contact the project administrator.
+      </div>
+    </div> <!-- End Success and Error Messages for the user. -->
+  </div>
+
   <div class="row">
       <div class="col-md-12">
           <h1>Do you see crop marks appearing?</h1>
@@ -14,18 +32,23 @@
   <div class="row">
       <div class="col-md-12">
           <p>
-            <span>Click on the image to see changes across time.</span>
+            <span>Click multiple times on the image to see if crop marks appear over time.</span>
           </p>
           <div id="imagery-container">
-              <img id="imagery" src="https://i.imgur.com/GeHxzb7.png" style="max-width=100%">
+              <img id="imagery" style="display: block; margin: 0 auto;" src="https://i.imgur.com/GeHxzb7.png" style="max-width=100%">
+              <br>
+              
           </div>
+          <p>
+            <span id="imagery-timestamp"></span>
+          </p>
       </div>
   </div>
   <div class="row" style="padding-top:15px;">
     <div class="col-md-12" align="center">
-      <button type="button" class="btn btn-primary btn-lg">Yes</button>
-      <button type="button" class="btn btn-secondary btn-lg">No</button>
-      <button type="button" class="btn btn-warning btn-lg">Bad Image</button>
+      <button type="button" class="btn btn-primary btn-lg btn-user-answer" value="Yes">Yes</button>
+      <button type="button" class="btn btn-secondary btn-lg btn-user-answer" value="No">No</button>
+      <button type="button" class="btn btn-warning btn-lg btn-user-answer" value="Bad Image">Bad Image</button>
     </div>
   </div>
 </div>
@@ -34,9 +57,9 @@
 (function() {
   
     pybossa.taskLoaded(function(task, deferred) {
-        if (!$.isEmptyObject(task)) {
+        if(!$.isEmptyObject(task)) {
 
-            var USER_ID = 'XXXXX';
+            var USER_ID = 'XXXX';
             
             // Build an image HTML element for each time in the time series.
             for(var i=0; i<4; i++){
@@ -55,6 +78,8 @@
                 img.attr('src', imgUrl).css('height', 500);
                 img.addClass('img-thumbnail img-responsive');
                 img.css('cursor', 'pointer');
+                img.css('display', 'block');
+                img.css('margin', '0 auto');
                  
                 // Only show the first one by default.
                 if(i != 0){
@@ -71,40 +96,71 @@
         }
     });
 
-    pybossa.presentTask(function(task, deferred){
-      
-        
-        if (!$.isEmptyObject(task)) {
-            // Clear HTML content of container (to remove default loading image).
-            $('#imagery-container').html('');
-      
+    pybossa.presentTask(function(task, deferred){     
+      if (!$.isEmptyObject(task)) {
+        // Clear HTML content of container (to remove default loading image).
+        $('#imagery-container').html('');
+  
 
-            $('#task-id').html(task.id);
-          
-            // Build an image HTML element for each time in the time series.
-            for(var i=0; i<4; i++){
-                $('#imagery-container').append(task.info['image' + (i+1)]);
+        $('#task-id').html(task.id);
+      
+        // Build an image HTML element for each time in the time series.
+        for(var i=0; i<4; i++){
+            $('#imagery-container').append(task.info['image' + (i+1)]);
+        }
+
+        // Display first image timestamp.
+        $('#imagery-timestamp').html(task.info['time1']);
+
+        // When clicking on the image, load the next image in the time series.
+        $('.imagery').click(function(){
+
+            // Hide currently displayed imagery.
+            var imageryIndex = parseInt($(this).data('index'));
+            $('#imagery' + imageryIndex).css('display', 'none');
+
+            // Reset if we just clicked on the last image of the time series.
+            if(imageryIndex == 4){
+                imageryIndex = 0; 
             }
 
-            // When clicking on the image, load the next image in the time series.
-            $('.imagery').click(function(){
+            // Show next image in the time series.
+            $('#imagery' + (imageryIndex+1)).css('display', 'block');
 
-                // Hide currently displayed imagery.
-                var imageryIndex = parseInt($(this).data('index'));
-                $('#imagery' + imageryIndex).css('display', 'none');
+            // Display image timestamp.
+            $('#imagery-timestamp').html(task.info['time' + (imageryIndex+1)]); 
 
-                // Reset if we just clicked on the last image of the time series.
-                if(imageryIndex == 4){
-                    imageryIndex = 0; 
-                }
+        });
+      
+        $('.btn-user-answer').off('click').on('click', function(evt) {
+            /*
+            var answer = {
+              'answer:' $(this).attr("value"),
+              'bbox': {
+                'xmin': task.info.xmin,
+                'ymin': task.info.ymin,
+                'xmax': task.info.xmax,
+                'ymax': task.info.ymax
+              },
+              'lat': task.info.lat,
+              'lng': task.info.lng
+            };*/
 
-                // Show next image in the time series.
-                $('#imagery' + (imageryIndex+1)).css('display', 'block');
+            var answer = $(this).attr("value");
 
-            });
-        }
-    });
+            if (typeof answer != 'undefined') {
+              pybossa.saveTask(task.id, answer).done(function() {
+                deferred.resolve();
+              });
+            }else {
+              $("#error").show();
+            }
+        });
+      }else {
+        $("#finish").fadeIn(500);
+      }
+  });
 
-    pybossa.run('XXXXX');
+    pybossa.run('XXXX');
 })();
 </script>
