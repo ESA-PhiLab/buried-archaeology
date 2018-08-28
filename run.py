@@ -2,7 +2,7 @@ from pyproj import Proj, transform
 import csv
 import furl
 
-wms_service_user_id = 'USER_ID'
+wms_service_user_id = 'USER_ID_TOKEN'
 wms_url = 'https://services.sentinel-hub.com/ogc/wms/' + wms_service_user_id
 
 x_dimension = 1600 # meters.
