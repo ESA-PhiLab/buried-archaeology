@@ -1,5 +1,5 @@
-<div style="text-align: center;">
-  <div class="row">
+<div style="text-align: center; padding-bottom:50px;">
+  <div class="row row-task-id">
     <div class="col-md-12" style="text-align: right;">
       <p>
         <span>You are now working on task:</span> <span id="task-id" class="label label-warning">#</span>
@@ -9,12 +9,16 @@
 
   <div class="row">
     <!-- Success and Error Messages for the user. --> 
-    <div class="col-md-12" style="height:50px">
+    <div class="col-md-12" style="height:30px">
+      <div id="loading" class="alert alert-info" style="display:none;">
+            <a class="close">×</a>
+            <span>Loading next task...</span>
+        </div>
       <div id="finish" class="alert alert-success" style="display:none;">
         <strong>Congratulations!</strong> <span>You have contributed to all available tasks!</span>
         <br/>
         <div class="alert-actions">
-            <a class="btn small" href="/">Check out other projects</a>
+            <a class="btn small" href="https://apps.sentinel-hub.com/eo-browser/">Check out the Sentinel Hub's EO Browser to explore more.</a>
         </div>
       </div>
       <div id="error" class="alert alert-danger" style="display:none;">
@@ -24,34 +28,35 @@
     </div> <!-- End Success and Error Messages for the user. -->
   </div>
 
-  <div class="row">
-      <div class="col-md-12">
-          <h1>Do you see crop marks appearing?</h1>
-      </div>
-  </div>
-  <div class="row">
-      <div class="col-md-12">
-          <p>
-            <span>Click multiple times on the image to see if crop marks appear over time.</span>
-          </p>
-          <div id="imagery-container">
-              <img id="imagery" style="display: block; margin: 0 auto;" src="https://i.imgur.com/GeHxzb7.png" style="max-width=100%">
-              <br>
-              
-          </div>
-          <p>
-            <span id="imagery-timestamp"></span>
-          </p>
-      </div>
-  </div>
-  <div class="row" style="padding-top:15px;">
-    <div class="col-md-12" align="center">
-      <button type="button" class="btn btn-primary btn-lg btn-user-answer" value="Yes">Yes</button>
-      <button type="button" class="btn btn-secondary btn-lg btn-user-answer" value="No">No</button>
-      <button type="button" class="btn btn-warning btn-lg btn-user-answer" value="Bad Image">Bad Image</button>
+  <div class="row row-skeleton"> <!-- Start Task Row-->
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Do you see crop marks appearing?</h1>
+        </div>
     </div>
-  </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+              <span>Click multiple times on the image to see if crop marks appear over time.</span>
+            </p>
+            <div id="imagery-container">
+              <img id="imagery" style="display: block; margin: 0 auto;" src="https://i.imgur.com/GeHxzb7.png" style="height:400px;">
+            </div>
+            <p>
+              <span id="imagery-timestamp"></span>
+            </p>
+        </div>
+    </div>
+    <div class="row" style="padding-top:15px;">
+      <div class="col-md-12" align="center">
+        <button type="button" class="btn btn-primary btn-lg btn-user-answer" value="Yes">Yes</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-user-answer" value="No">No</button>
+        <button type="button" class="btn btn-warning btn-lg btn-user-answer" value="Bad Image">Bad Image</button>
+      </div>
+    </div>
+  </div> <!-- End Task Row -->
 </div>
+
 
 <script type="text/javascript">
 (function() {
@@ -75,7 +80,7 @@
                 var imgUrl = imgUrlTimeNotSet.replace('TIME_TOKEN', task.info['time' + (i+1)]);
               
                 // Set HTML properties.
-                img.attr('src', imgUrl).css('height', 500);
+                img.attr('src', imgUrl).css('height', 400);
                 img.addClass('img-thumbnail img-responsive');
                 img.css('cursor', 'pointer');
                 img.css('display', 'block');
@@ -152,11 +157,16 @@
               pybossa.saveTask(task.id, answer).done(function() {
                 deferred.resolve();
               });
+              $("#loading").fadeIn(500);
             }else {
               $("#error").show();
             }
         });
+        $("#loading").hide();
       }else {
+        $(".row-task-id").hide();
+        $(".row-skeleton").hide();
+        $("#loading").hide();
         $("#finish").fadeIn(500);
       }
   });
