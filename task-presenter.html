@@ -61,6 +61,11 @@
 <script type="text/javascript">
 (function() {
   
+    // Click counter. Counts how many clicks were made on the image.
+    // Could serve as a metric to evaluate how much effort was put into
+    // analysing the satellite imagery transition over time.
+    var clickCounter = 0;
+  
     pybossa.taskLoaded(function(task, deferred) {
         if(!$.isEmptyObject(task)) {
 
@@ -101,12 +106,15 @@
         }
     });
 
-    pybossa.presentTask(function(task, deferred){     
+    pybossa.presentTask(function(task, deferred){
+      
+      // Reset click counter.
+      clickCounter = 0;
+      
       if (!$.isEmptyObject(task)) {
         // Clear HTML content of container (to remove default loading image).
         $('#imagery-container').html('');
   
-
         $('#task-id').html(task.id);
       
         // Build an image HTML element for each time in the time series.
@@ -119,6 +127,9 @@
 
         // When clicking on the image, load the next image in the time series.
         $('.imagery').click(function(){
+          
+            // Increment the click counter.
+            clickCounter++;
 
             // Hide currently displayed imagery.
             var imageryIndex = parseInt($(this).data('index'));
@@ -140,7 +151,7 @@
         $('.btn-user-answer').off('click').on('click', function(evt) {
             /*
             var answer = {
-              'answer:' $(this).attr("value"),
+              'answer': $(this).attr("value"),
               'bbox': {
                 'xmin': task.info.xmin,
                 'ymin': task.info.ymin,
@@ -151,7 +162,11 @@
               'lng': task.info.lng
             };*/
 
-            var answer = $(this).attr("value");
+            //var answer = $(this).attr("value");
+            var answer = {
+                'answer': $(this).attr("value"),
+                'clicks': clickCounter
+            }
 
             if (typeof answer != 'undefined') {
               pybossa.saveTask(task.id, answer).done(function() {
