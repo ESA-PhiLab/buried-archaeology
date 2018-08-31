@@ -1,0 +1,125 @@
+<div style="text-align: center; padding-bottom:50px;">
+  <div class="row row-task-id">
+    <div class="col-md-12" style="text-align: right;">
+      <p>
+        <span>You are now working on task:</span> <span id="task-id" class="label label-warning">#</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Success and Error Messages for the user. --> 
+    <div class="col-md-12" style="height:30px">
+      <div id="loading" class="alert alert-info" style="display:none;">
+            <a class="close">×</a>
+            <span>Loading next task...</span>
+        </div>
+      <div id="finish" class="alert alert-success" style="display:none;">
+        <strong>Congratulations!</strong> <span>You have contributed to all available tasks!</span>
+        <br/>
+      </div>
+      <div id="error" class="alert alert-danger" style="display:none;">
+          <a class="close">×</a>
+          <strong>Error!</strong> Something went wrong, please contact the project administrator.
+      </div>
+    </div> <!-- End Success and Error Messages for the user. -->
+  </div>
+
+  <div class="row row-skeleton"> <!-- Start Task Row-->
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Can you see crop marks?</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="imagery-container">
+              <img id="imagery" style="display: block; margin: 0 auto;" src="https://i.imgur.com/GeHxzb7.png" style="height:400px;">
+            </div>
+            <p>
+              <span id="imagery-timestamp"></span>
+            </p>
+        </div>
+    </div>
+    <div class="row" style="padding-top:15px;">
+      <div class="col-md-12" align="center">
+        <button type="button" class="btn btn-primary btn-lg btn-user-answer" value="Yes">Yes</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-user-answer" value="No">No</button>
+        <button type="button" class="btn btn-warning btn-lg btn-user-answer" value="Bad Image">Bad Image</button>
+      </div>
+    </div>
+  </div> <!-- End Task Row -->
+</div>
+
+
+<script type="text/javascript">
+(function() {
+  
+    pybossa.taskLoaded(function(task, deferred) {
+        if(!$.isEmptyObject(task)) {
+
+            var BING_API_KEY = 'XXXX';
+            
+            var img = $('<img class="imagery" id="imagery"/>');
+            img.load(function() {
+           
+                // Continue as soon as the image is loaded.
+                deferred.resolve(task);
+            });
+          
+            // Build image URL.
+            var imgUrl= task.info.img_url.replace('BING_API_KEY', BING_API_KEY);
+          
+            // Set HTML properties.
+            img.attr('src', imgUrl).css('height', 512);
+            img.addClass('img-thumbnail img-responsive');
+            img.css('display', 'block');
+            img.css('margin', '0 auto');
+          
+            task.info['image'] = img;
+        }
+        else {
+            deferred.resolve(task);
+        }
+    });
+
+    pybossa.presentTask(function(task, deferred){
+      
+      if (!$.isEmptyObject(task)) {
+        // Clear HTML content of container (to remove default loading image).
+        $('#imagery-container').html('');
+  
+        $('#task-id').html(task.id);
+      
+        // Build an image HTML element for each time in the time series.
+        $('#imagery-container').append(task.info['image']);
+        
+        // Display first image timestamp.
+        $('#imagery-timestamp').html(task.info['start_date']);
+      
+        $('.btn-user-answer').off('click').on('click', function(evt) {
+
+            var answer = $(this).attr("value");
+          
+            if (typeof answer != 'undefined') {
+                pybossa.saveTask(task.id, answer).done(function(){
+                deferred.resolve();
+              });
+              $("#loading").fadeIn(500);
+            }else {
+              $("#error").show();
+            }
+        });
+        $("#loading").hide();
+
+      }else{
+        $(".row-task-id").hide();
+        $(".row-skeleton").hide();
+        $("#loading").hide();
+        $("#finish").fadeIn(500);
+      }
+  });
+
+    pybossa.run('XXXX');
+})();
+</script>
