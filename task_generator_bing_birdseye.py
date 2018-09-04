@@ -5,7 +5,7 @@ import time
 import csv
 
 metadata_url_template = 'https://dev.virtualearth.net/REST/V1/Imagery/Metadata/Birdseye/{},{}?zl={}&orientation={}&o=json&key={}'
-BING_API_KEY = 'XXXX'
+BING_API_KEY = ''
 
 EARTH_RADIUS = 6378137
 
@@ -35,7 +35,7 @@ def main():
     # Open CSV file to write task rows into.
     with open('tasks_bing_birdseye.csv', mode='w') as tasks_csv_file, open('tasks_bing_no_birdseye_available.csv', mode='w') as tasks_no_birdseye_csv_file:
         # Create CSV Writer and write header.
-        task_field_names = ['img_url', 'lat', 'lng', 'tiles_x', 'tiles_y', 'tile_id', 'img_height', 'img_width', 'start_date', 'end_date']
+        task_field_names = ['img_url', 'img_url_subdomain', 'lat', 'lng', 'tiles_x', 'tiles_y', 'img_height', 'img_width', 'start_date', 'end_date']
         task_writer = csv.DictWriter(tasks_csv_file, fieldnames=task_field_names)
         task_writer.writeheader()
 
@@ -86,32 +86,20 @@ def main():
                     vintage_start = metadata_json['resourceSets'][0]['resources'][0]['vintageStart']
                     vintage_end = metadata_json['resourceSets'][0]['resources'][0]['vintageEnd']
 
-                    # Create a task for each tile image.
-                    tiled_id = 0
-                    for y in range(0, tiles_y):
-                        for x in range(0, tiles_x):
+                    # Write row in CSV
+                    task_writer.writerow({
+                        'img_url': img_url_template.replace(BING_API_KEY, 'BING_API_KEY'),
+                        'img_url_subdomain': img_url_subdomain, 
+                        'lat': current_lat,
+                        'lng': current_lng,
+                        'tiles_x': tiles_x,
+                        'tiles_y': tiles_y,
+                        'img_height': img_height,
+                        'img_width': img_width,
+                        'start_date': vintage_start,
+                        'end_date': vintage_end})
 
-                            # Build the URL. Make sure not to save the API key into the tasks CSV file.
-                            img_url = img_url_template.format(
-                                subdomain=img_url_subdomain,
-                                tileId=tiled_id).replace(BING_API_KEY, 'BING_API_KEY') 
-
-                            # Write row in CSV
-                            task_writer.writerow({
-                                'img_url': img_url, 
-                                'lat': current_lat,
-                                'lng': current_lng,
-                                'tiles_x': tiles_x,
-                                'tiles_y': tiles_y,
-                                'tile_id': tiled_id,
-                                'img_height': img_height,
-                                'img_width': img_width,
-                                'start_date': vintage_start,
-                                'end_date': vintage_end})
-
-                            # Increment tile id for next image url.
-                            tiled_id = tiled_id + 1 
-                            task_counter = task_counter + 1
+                    task_counter = task_counter + 1
 
                     # Caculate next current_lng based on current image width and number of x tiles.
                     dx = min(tiles_x, tiles_y) * img_width * get_ground_resolution(current_lat)

@@ -1,2 +1,2 @@
 source ./venv/bin/activate
-python sentinel_task_generator.py
+python task_generator_sentinel.py
