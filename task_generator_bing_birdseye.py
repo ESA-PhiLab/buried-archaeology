@@ -5,7 +5,7 @@ import time
 import csv
 
 metadata_url_template = 'https://dev.virtualearth.net/REST/V1/Imagery/Metadata/Birdseye/{},{}?zl={}&orientation={}&o=json&key={}'
-BING_API_KEY = ''
+BING_API_KEY = 'XXXX'
 
 EARTH_RADIUS = 6378137
 
