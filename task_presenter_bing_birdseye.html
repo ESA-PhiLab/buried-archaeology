@@ -60,23 +60,43 @@
 
             var BING_API_KEY = 'XXXX';
             
-            var img = $('<img class="imagery" id="imagery"/>');
-            img.load(function() {
-           
-                // Continue as soon as the image is loaded.
-                deferred.resolve(task);
-            });
-          
-            // Build image URL.
-            var imgUrl= task.info.img_url.replace('BING_API_KEY', BING_API_KEY);
-          
-            // Set HTML properties.
-            img.attr('src', imgUrl).css('height', 400);
-            img.addClass('img-thumbnail img-responsive');
-            img.css('display', 'block');
-            img.css('margin', '0 auto');
-          
-            task.info['image'] = img;
+            // Get img url subdomain
+            var imgUrlSubdomain = task.info['img_url_subdomain'];
+            
+            // Each task is a 2D grid.
+            // Get the size of that grid in order to iterator over it. 
+            tilesX = task.info['tiles_x'];
+            tilesY = task.info['tiles_y'];
+
+            // Build an image HTML element for each tile in the grid.
+            for(var tileId=0; tileId < (tilesY * tilesX); tileId++){
+
+              var img = $('<img class="imagery" id="imagery' + tileId + '" data-index="' + tileId + '" />');
+              img.load(function() {
+             
+                  // Continue as soon as the image is loaded.
+                  deferred.resolve(task);
+              });
+            
+              // Build image URL.
+              var imgUrl = task.info.img_url.replace('{subdomain}', imgUrlSubdomain).replace('{tileId}', tileId).replace('BING_API_KEY', BING_API_KEY);
+            
+              // Set HTML properties.
+              img.attr('src', imgUrl).css('height', 200);
+              img.addClass('img-thumbnail img-responsive');
+              //img.css('cursor', 'pointer');
+              //img.css('display', 'block');
+              //img.css('margin', '0 auto');
+               
+              // Only show the first one by default.
+              if(i != 0){
+                  img.css('display', 'none');
+              }else{
+                  img.css('display', 'block');
+              }
+            
+              task.info['image' + tileId] = img;
+            }
         }
         else {
             deferred.resolve(task);
@@ -88,11 +108,31 @@
       if (!$.isEmptyObject(task)) {
         // Clear HTML content of container (to remove default loading image).
         $('#imagery-container').html('');
-  
+
+        // Display task ID.
         $('#task-id').html(task.id);
+
+        // Each task is a 2D grid.
+        // Get the size of that grid in order to iterator over it.
+        tilesX = task.info['tiles_x'];
+        tilesY = task.info['tiles_y'];
+
+        // Track tileId.
+        var tileId = 0;
+
+        for(var y=0; y <tilesY; y++){
+          for(var x=0; x<tilesX; x++){
+            $('#imagery-container').append(task.info['image' + tileId]);
+
+            // Increment tile Id prioe to next iteration so that next image is fetched.
+            tileId++;
+          }
+          
+          // Next loop is the begining of a new row of tiles.
+          // Skip line to start a new row.
+          $('#imagery-container').append('<br>')
+        }
       
-        // Build an image HTML element for each time in the time series.
-        $('#imagery-container').append(task.info['image']);
         
         // Display first image timestamp.
         $('#imagery-timestamp').html(task.info['start_date']);
