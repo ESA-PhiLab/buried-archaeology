@@ -9,22 +9,25 @@ BING_API_KEY = 'XXXX'
 
 EARTH_RADIUS = 6378137
 
+
 # Imagery request parameters
-LAT_BOUNDS = [51.72, 52.22]
-LNG_BOUNDS = [-2.28, -1.21]
 ZOOM_LEVEL = 19
-ORIENTATION = 0
+
+# A double value between 0 to 360,
+# Where 0 = North [default], 90 = East, 180 = South, 270 = West.
+ORIENTATIONS = 0
 
 DEFAULT_TILE_X = 3
 DEFAULT_TILE_Y = 3
 DEFAULT_IMG_WIDTH = 512
 DEFAULT_IMG_HEIGHT = 512
 
+# Define boundary box.
 # Upper left hand corner lat/lng coords.
-ulhc_coords = [LAT_BOUNDS[1], LNG_BOUNDS[0]]
+ulhc_coords = [42.16, 12.20]
 
 # Lower right hand corner lat/lng coords.
-lrhc_coords = [LAT_BOUNDS[0], LNG_BOUNDS[1]]
+lrhc_coords = [41.66, 12.84]
 
 def get_ground_resolution(latitude):
     ground_resolution = (math.cos(latitude * math.pi/180) * 2 * math.pi * EARTH_RADIUS) / (256 * 2**ZOOM_LEVEL)
