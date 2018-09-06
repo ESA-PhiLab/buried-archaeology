@@ -15,7 +15,7 @@ ZOOM_LEVEL = 19
 
 # A double value between 0 to 360,
 # Where 0 = North [default], 90 = East, 180 = South, 270 = West.
-ORIENTATIONS = 0
+ORIENTATION = 0
 
 DEFAULT_TILE_X = 3
 DEFAULT_TILE_Y = 3
@@ -24,7 +24,7 @@ DEFAULT_IMG_HEIGHT = 512
 
 # Define boundary box.
 # Upper left hand corner lat/lng coords.
-ulhc_coords = [42.16, 12.20]
+ulhc_coords = [42.03, 12.20]
 
 # Lower right hand corner lat/lng coords.
 lrhc_coords = [41.66, 12.84]
@@ -55,7 +55,18 @@ def main():
         
         while current_lat >= lrhc_coords[0]:
             print 'Processing new row at latitude ' + str(current_lat) + '.'
+
             while current_lng <= lrhc_coords[1]:
+                # reset values
+                img_url_template = None
+                img_height = None
+                img_width = None
+                tiles_x = None 
+                tiles_y = None
+                img_url_subdomain = None
+                vintage_start = None 
+                vintage_end = None
+
                 metadata_url = metadata_url_template.format(
                     current_lat, current_lng, ZOOM_LEVEL, ORIENTATION, BING_API_KEY)
 
@@ -111,8 +122,16 @@ def main():
                 # Allow enough time between each requests to not trigger any DDoS or scraping alerts.
                 time.sleep(0.5)
 
-            # Caculate next current_lat.
-            dy = min(tiles_x, tiles_y) * img_height * get_ground_resolution(current_lat)
+            # Caculate next current_lat for the next row.
+            # However, it could be that that tiles_x, tiles_y, and img_height variables were not set
+            # if the previous row had not birdseye imagery. So check for that here.
+            if tiles_x is None or tiles_y is None:
+                min_tile_nums = DEFAULT_TILE_X
+                img_height = DEFAULT_IMG_HEIGHT
+            else:
+                min_tile_nums = min(tiles_x, tiles_y)
+
+            dy = min_tile_nums * img_height * get_ground_resolution(current_lat)
             current_lat = current_lat - (dy / EARTH_RADIUS) * (180 / math.pi);
 
             # Reset current_lng so we restart at the beginning of the new current_lat row.
