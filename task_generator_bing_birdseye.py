@@ -39,11 +39,11 @@ def main():
     with open('tasks_bing_birdseye.csv', mode='w') as tasks_csv_file, open('tasks_bing_no_birdseye_available.csv', mode='w') as tasks_no_birdseye_csv_file:
         # Create CSV Writer and write header.
         task_field_names = ['img_url', 'img_url_subdomain', 'lat', 'lng', 'tiles_x', 'tiles_y', 'img_height', 'img_width', 'start_date', 'end_date']
-        task_writer = csv.DictWriter(tasks_csv_file, fieldnames=task_field_names)
+        task_writer = csv.DictWriter(tasks_csv_file, fieldnames=task_field_names, lineterminator = '\n')
         task_writer.writeheader()
 
         task_no_birdseye_field_names = ['metadata_url', 'lat', 'lng']
-        task_writer_no_birdseye = csv.DictWriter(tasks_no_birdseye_csv_file, fieldnames=task_no_birdseye_field_names)
+        task_writer_no_birdseye = csv.DictWriter(tasks_no_birdseye_csv_file, fieldnames=task_no_birdseye_field_names, lineterminator = '\n')
         task_writer_no_birdseye.writeheader()
 
         # Init first lat/lng to check against
