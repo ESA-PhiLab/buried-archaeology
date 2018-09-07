@@ -137,8 +137,8 @@ def main():
             # Reset current_lng so we restart at the beginning of the new current_lat row.
             current_lng = ulhc_coords[1]
          
-        print 'Number of tasks created: ' + task_counter
-        print 'Number of tasks skipped (no birdseye available): ' + task_no_birdseye_counter
+        print 'Number of tasks created: ' + str(task_counter)
+        print 'Number of tasks skipped (no birdseye available): ' + str(task_no_birdseye_counter)
 
 if __name__ == "__main__":
     main()
