@@ -1,0 +1,10 @@
+img_url,img_url_subdomain,lat,lng,tiles_x,tiles_y,img_height,img_width,start_date,end_date
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000321301020300-7-5-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,42.03,12.23295898,4,3,512,512,20 Jul 2008 GMT,20 Jul 2008 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000321320012311-7-5-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,42.03,12.23707886,4,3,512,512,01 Aug 2008 GMT,01 Aug 2008 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000003202313033-12-16-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,41.97183066,12.52546997,3,4,512,512,04 Aug 2014 GMT,04 Aug 2014 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000003202313113-12-16-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,41.97183066,12.52958984,3,4,512,512,04 Aug 2014 GMT,04 Aug 2014 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000003202313133-12-16-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,41.97183066,12.53370972,3,4,512,512,04 Aug 2014 GMT,04 Aug 2014 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000321330000313-8-5-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,41.97183066,12.53782959,4,3,512,512,15 Jun 2012 GMT,15 Jun 2012 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000003202313233-12-16-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,41.97183066,12.54194946,3,4,512,512,04 Aug 2014 GMT,04 Aug 2014 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000003202313313-12-16-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,41.97183066,12.54606934,3,4,512,512,04 Aug 2014 GMT,04 Aug 2014 GMT
+http://ak.{subdomain}.tiles.virtualearth.net/tiles/be000003202313333-12-16-19-{tileId}.jpeg?g=6617&key=BING_API_KEY,t0,41.97183066,12.55018921,3,4,512,512,04 Aug 2014 GMT,04 Aug 2014 GMT
