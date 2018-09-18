@@ -1,7 +1,14 @@
 <style>
+.imagery-big{
+   height: 175px;
+}
+    
+.imagery-small{
+   height: 150px;    
+}
+
 .imagery {
     transition: transform .2s; /* Animation */
-    height: 150px;
     border-width: 1px;
     border-style: solid;
     border-color: white;
@@ -102,15 +109,15 @@
         </div>
         <div class="row">
           <div class="col-sm-4">
-            <img class="img-responsive imagery-sample" data-id="1" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-1.PNG" />
+            <img class="img-responsive imagery-sample" data-id="1" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-1.png" />
           	<br>
           </div>
           <div class="col-sm-4">
-            <img class="img-responsive imagery-sample" data-id="2" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-2.PNG" />
+            <img class="img-responsive imagery-sample" data-id="2" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-3.png" />
           	<br>
           </div>
           <div class="col-sm-4">
-            <img class="img-responsive imagery-sample" data-id="3" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-3.PNG" />
+            <img class="img-responsive imagery-sample" data-id="3" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-2.png" />
           	<br>
           </div>
         </div>
@@ -172,7 +179,7 @@
             var imgUrlSubdomain = task.info['img_url_subdomain'];
             
             // Each task is a 2D grid.
-            // Get the size of that grid in order to iterator over it. 
+            // Get the size of that grid in order to iterate over it. 
             tilesX = task.info['tiles_x'];
             tilesY = task.info['tiles_y'];
 
@@ -192,6 +199,15 @@
               // Set HTML properties.
               img.attr('src', imgUrl);
               img.addClass('img-thumbnail img-responsive');
+              
+              // Change size of the image depending on whether the grid layout is 4x3 or 3x4.
+              if(tilesX == 4){
+                // 4x3 (x=4 and y=3)
+                img.addClass('imagery-big');
+              }else{
+                // 3x4 (x=3 and y=4)
+                img.addClass('imagery-small');
+              }
               
               task.info['image' + tileId] = img;
             }
@@ -220,18 +236,25 @@
 
         for(var y=0; y <tilesY; y++){
           for(var x=0; x<tilesX; x++){
-            $('#imagery-container').append(task.info['image' + tileId]);
+            
+            // If the tile grid is a 4x3 layout, then don't show the outer grids.
+            // This is because they are always mostly black and their areas are covered
+            // by neighboring tasks.
+            if(!((tilesX == 4 && (tileId+1) % 4 == 0) || (tilesX == 4 && tileId > 7))){
+            	$('#imagery-container').append(task.info['image' + tileId]);
+            }
 
             // Increment tile Id prioe to next iteration so that next image is fetched.
             tileId++;
           }
           
-          // Next loop is the begining of a new row of tiles.
+          // Next loop is the beginning of a new row of tiles.
           // Skip line to start a new row.
-          $('#imagery-container').append('<br>')
+          if((tilesX == 3 && tileId <= 9) || tilesX == 4){
+          	$('#imagery-container').append('<br>');
+          }
         }
       
-        
         // Display first image timestamp.
         $('#imagery-timestamp').html(task.info['start_date']);
       
