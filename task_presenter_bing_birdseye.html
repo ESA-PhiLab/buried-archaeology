@@ -1,16 +1,33 @@
 <style>
+.imagery-big{
+   height: 175px;
+}
+    
+.imagery-small{
+   height: 150px;    
+}
+
 .imagery {
     transition: transform .2s; /* Animation */
-    height: 150px;
     border-width: 1px;
     border-style: solid;
     border-color: white;
     border-radius: 0px;
     padding: 0px;
 }
+  
+.imagery-sample {
+    transition: transform .2s; /* Animation */
+}
 
-.imagery:hover {
+.imagery:hover{
     transform: scale(2.5); /* (250% zoom) */
+    cursor: crosshair;
+}
+  
+.imagery-sample:hover {
+    transform: scale(2); /* (200% zoom) */
+    cursor: crosshair;
 }
 </style>
 
@@ -18,16 +35,16 @@
   <div class="row row-task-id">
     <div class="col-md-12" style="text-align: right;">
       <p>
-        <span>You are now working on task:</span> <span id="task-id" class="label label-warning">#</span>
-      </p>
+       <span>You are now working on task:</span> <span id="task-id" class="label label-warning">#</span>
+      </p>    
     </div>
   </div>
 
   <div class="row">
     <!-- Success and Error Messages for the user. --> 
-    <div class="col-md-12" style="height:30px">
+    <div class="col-md-12" style="height:20px">
       <div id="loading" class="alert alert-info" style="display:none;">
-            <a class="close">×</a>
+            <a class="close">&times;</a>
             <span>Loading next task...</span>
         </div>
       <div id="finish" class="alert alert-success" style="display:none;">
@@ -35,7 +52,7 @@
         <br/>
       </div>
       <div id="error" class="alert alert-danger" style="display:none;">
-          <a class="close">×</a>
+          <a class="close">&times;</a>
           <strong>Error!</strong> Something went wrong, please contact the project administrator.
       </div>
     </div> <!-- End Success and Error Messages for the user. -->
@@ -44,20 +61,24 @@
   <div class="row row-skeleton"> <!-- Start Task Row-->
     <div class="row">
         <div class="col-md-12">
-            <h1>Can you see crop marks?</h1>
+            <h1>Can you see archaeological crop marks?</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <p>
-              <span>You can hover over a tile to zoom in.</span>
-            </p>
+          <p>
+            <span>You can hover over a tile to zoom in.</span>
+         	<br>
+            <button type="button" class="btn btn-link" style="padding:0px;" data-toggle="modal" data-target="#modal-example">Click here to see examples of what crop marks look like.</button> 
+          </p>
           <div id="imagery-container">
-              <img id="imagery" style="display: block; margin: 0 auto;" src="https://i.imgur.com/GeHxzb7.png" style="height:400px;">
-            </div>
-            <p>
-              <span id="imagery-timestamp"></span>
-            </p>
+            <img id="imagery" style="display: block; margin: 0 auto;" src="https://i.imgur.com/GeHxzb7.png" style="height:400px;">
+          </div>
+          <p style="font-size:9px;" >
+            <span id="imagery-timestamp"></span>
+            <br>
+            <span>&copy; 2018 Microsoft / Bolm</span>
+          </p>
         </div>
     </div>
     <div class="row" style="padding-top:15px;">
@@ -68,6 +89,50 @@
       </div>
     </div>
   </div> <!-- End Task Row -->
+</div>
+
+<!-- Modal showing examples of what to look for. -->
+<div id="modal-example" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Here's what we're looking for...</h4>
+      </div>
+      <div class="modal-body" align="center">
+         <div class="row">
+          <div class="col-sm-12">
+            <p>Archaeological crop marks in this area are usually of ancient Roman origin. They tend to have clear geometric patterns, revealing the foundations of buildings. Roman roads can be distinguished as very straight lines of parched vegetation (overlying ancient paving stones), with strips of greener vegetation on either side, where ditches used to be.</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <img class="img-responsive imagery-sample" data-id="1" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-1.png" />
+          	<br>
+          </div>
+          <div class="col-sm-4">
+            <img class="img-responsive imagery-sample" data-id="2" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-3.png" />
+          	<br>
+          </div>
+          <div class="col-sm-4">
+            <img class="img-responsive imagery-sample" data-id="3" src="https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/crop-marks-example-2.png" />
+          	<br>
+          </div>
+        </div>
+        <div class="row">  
+          <div class="col-sm-12">
+          	You can hover over an image to zoom in. 
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 
@@ -83,6 +148,27 @@
     $( "#imagery-container" ).mouseleave(function() {
       $(".answer-btns-container").css('z-index', 1);
     });
+  
+  // Making sure that zooming in the sample imagery doesn't place the image under the other sample images.
+    $(".imagery-sample").mouseover(function() {
+      var sampleImgId = $(this).data('id');
+      
+      $(".imagery-sample").each(function() {
+        if($(this).data('id') != sampleImgId){
+          $(this).parent().css('z-index', 1);
+          
+        }else{
+          $(this).parent().css('z-index', 2);
+        }
+	  });
+    });
+  
+    // Reseting z-index after finished zooming in on sample imagery. 
+    $(".imagery-sample").mouseleave(function() {
+      $(".imagery-sample").each(function() {
+      	$(this).parent().removeAttr('z-index');
+	  });
+    });
       
     pybossa.taskLoaded(function(task, deferred) {
         if(!$.isEmptyObject(task)) {
@@ -93,7 +179,7 @@
             var imgUrlSubdomain = task.info['img_url_subdomain'];
             
             // Each task is a 2D grid.
-            // Get the size of that grid in order to iterator over it. 
+            // Get the size of that grid in order to iterate over it. 
             tilesX = task.info['tiles_x'];
             tilesY = task.info['tiles_y'];
 
@@ -113,6 +199,15 @@
               // Set HTML properties.
               img.attr('src', imgUrl);
               img.addClass('img-thumbnail img-responsive');
+              
+              // Change size of the image depending on whether the grid layout is 4x3 or 3x4.
+              if(tilesX == 4){
+                // 4x3 (x=4 and y=3)
+                img.addClass('imagery-big');
+              }else{
+                // 3x4 (x=3 and y=4)
+                img.addClass('imagery-small');
+              }
               
               task.info['image' + tileId] = img;
             }
@@ -141,18 +236,25 @@
 
         for(var y=0; y <tilesY; y++){
           for(var x=0; x<tilesX; x++){
-            $('#imagery-container').append(task.info['image' + tileId]);
+            
+            // If the tile grid is a 4x3 layout, then don't show the outer grids.
+            // This is because they are always mostly black and their areas are covered
+            // by neighboring tasks.
+            if(!((tilesX == 4 && (tileId+1) % 4 == 0) || (tilesX == 4 && tileId > 7))){
+            	$('#imagery-container').append(task.info['image' + tileId]);
+            }
 
             // Increment tile Id prioe to next iteration so that next image is fetched.
             tileId++;
           }
           
-          // Next loop is the begining of a new row of tiles.
+          // Next loop is the beginning of a new row of tiles.
           // Skip line to start a new row.
-          $('#imagery-container').append('<br>')
+          if((tilesX == 3 && tileId <= 9) || tilesX == 4){
+          	$('#imagery-container').append('<br>');
+          }
         }
       
-        
         // Display first image timestamp.
         $('#imagery-timestamp').html(task.info['start_date']);
       
@@ -179,6 +281,6 @@
       }
   });
 
-    pybossa.run('XXXX');
+    pybossa.run('archaeology');
 })();
 </script>
