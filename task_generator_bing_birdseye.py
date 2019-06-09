@@ -36,7 +36,7 @@ def get_ground_resolution(latitude):
 def main():
 
     # Open CSV file to write task rows into.
-    with open('tasks_bing_birdseye.csv', mode='w') as tasks_csv_file, open('tasks_bing_no_birdseye_available.csv', mode='w') as tasks_no_birdseye_csv_file:
+    with open('tasks/tasks_bing_birdseye.csv', mode='w') as tasks_csv_file, open('tasks/tasks_bing_no_birdseye_available.csv', mode='w') as tasks_no_birdseye_csv_file:
         # Create CSV Writer and write header.
         task_field_names = ['img_url', 'img_url_subdomain', 'lat', 'lng', 'tiles_x', 'tiles_y', 'img_height', 'img_width', 'start_date', 'end_date']
         task_writer = csv.DictWriter(tasks_csv_file, fieldnames=task_field_names)
@@ -52,7 +52,7 @@ def main():
 
         task_counter = 0
         task_no_birdseye_counter = 0
-        
+
         while current_lat >= lrhc_coords[0]:
             print 'Processing new row at latitude ' + str(current_lat) + '.'
 
@@ -61,10 +61,10 @@ def main():
                 img_url_template = None
                 img_height = None
                 img_width = None
-                tiles_x = None 
+                tiles_x = None
                 tiles_y = None
                 img_url_subdomain = None
-                vintage_start = None 
+                vintage_start = None
                 vintage_end = None
 
                 metadata_url = metadata_url_template.format(
@@ -103,7 +103,7 @@ def main():
                     # Write row in CSV
                     task_writer.writerow({
                         'img_url': img_url_template.replace(BING_API_KEY, 'BING_API_KEY'),
-                        'img_url_subdomain': img_url_subdomain, 
+                        'img_url_subdomain': img_url_subdomain,
                         'lat': current_lat,
                         'lng': current_lng,
                         'tiles_x': tiles_x,
@@ -118,7 +118,7 @@ def main():
                     # Caculate next current_lng based on current image width and number of x tiles.
                     dx = min(tiles_x, tiles_y) * img_width * get_ground_resolution(current_lat)
                     current_lng = current_lng + (dx / EARTH_RADIUS) * (180 / math.pi) / math.cos(current_lat * math.pi / 180);
-                
+
                 # Allow enough time between each requests to not trigger any DDoS or scraping alerts.
                 time.sleep(0.5)
 
@@ -136,7 +136,7 @@ def main():
 
             # Reset current_lng so we restart at the beginning of the new current_lat row.
             current_lng = ulhc_coords[1]
-         
+
         print 'Number of tasks created: ' + task_counter
         print 'Number of tasks skipped (no birdseye available): ' + task_no_birdseye_counter
 

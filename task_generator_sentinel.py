@@ -32,7 +32,7 @@ params = {
     'width': x_dimension,
     'maxcc': 1,
     'time': 'TIME_TOKEN',
-    'srs': 'EPSG%3A3857' 
+    'srs': 'EPSG%3A3857'
 }
 
 furl = furl.furl('')
@@ -43,13 +43,13 @@ def main():
     in_proj = Proj(init='epsg:4326')
     out_proj = Proj(init='epsg:3857')
 
-    # Get x and y coordinates for upper left hand corner and lower right hand corner coords. 
+    # Get x and y coordinates for upper left hand corner and lower right hand corner coords.
     ulhc_x, ulhc_y = transform(in_proj, out_proj, ulhc_coords[0], ulhc_coords[1])
     lrhc_x, lrhc_y = transform(in_proj, out_proj, lrhc_coords[0], lrhc_coords[1])
 
-    
+
     # Open CSV file to write task rows into.
-    with open('tasks_sentinel.csv', mode='w') as tasks_csv_file:
+    with open('tasks/tasks_sentinel.csv', mode='w') as tasks_csv_file:
 
         # Create CSV Writer and write header.
         field_names = ['img_url', 'xmin', 'ymin', 'xmax', 'ymax', 'lat', 'lng', 'time1', 'time2', 'time3', 'time4']
@@ -86,9 +86,9 @@ def main():
                 furl.args = params
                 img_url = wms_url + furl.url
 
-                # Write task row in CSV file.     
+                # Write task row in CSV file.
                 writer.writerow({
-                    'img_url': img_url, 
+                    'img_url': img_url,
                     'xmin': x_min,
                     'ymin': y_min,
                     'xmax': x_max,
@@ -104,7 +104,7 @@ def main():
                 x_bounds_current = [x_max, x_max + x_dimension]
 
                 task_counter = task_counter + 1
-            
+
             # Completed the row on the x axis:
             # 1. Shift the y bounds to cover the next row.
             y_bounds_current = [y_max, y_max - y_dimension]
