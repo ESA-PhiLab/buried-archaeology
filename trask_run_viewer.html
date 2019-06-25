@@ -1,0 +1,395 @@
+<html>
+  <head>
+    <title>Buried Archeology</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>From Anna's Journal</title>
+    <meta name="title" content="Buried Archeology" />
+    <meta name="description" content="Buried Archeology." />
+
+    <script type="text/javascript"
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.0.0/papaparse.min.js" ></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous"></link>
+
+    <style>
+      .imagery-big{
+         height: 175px;
+      }
+
+      .imagery-small{
+         height: 150px;
+      }
+      .imagery {
+          transition: transform .2s; /* Animation */
+          border-width: 1px;
+          border-style: solid;
+          border-color: white;
+          border-radius: 0px;
+          padding: 0px;
+      }
+
+      .imagery-sample {
+          transition: transform .2s; /* Animation */
+      }
+
+      .imagery:hover{
+          transform: scale(2.5); /* (250% zoom) */
+          cursor: crosshair;
+      }
+
+      .imagery-sample:hover {
+          transform: scale(2); /* (200% zoom) */
+          cursor: crosshair;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="container-fluid" align="center">
+      <div>
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <div class="custom-file" align="left">
+              <input type="file" class="custom-file-input" id="file-task-info"
+                onchange="handleTaskInfoCsvFile(this.files)">
+              <label class="custom-file-label" for="file-task-info">Upload task info file...</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <div class="custom-file" align="left">
+              <input type="file" class="custom-file-input" id="file-task-runs"
+                onchange="handleTaskRunCsvFile(this.files)">
+              <label class="custom-file-label" for="file-task-runs">Upload task runs file...</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="answer-btns-container col-md-12">
+                Image tile size:
+                <button type="button" class="btn btn-secondary btn-lg btn-img-size btn-img-size-decrease" value="-">-</button>
+                <button type="button" class="btn btn-secondary btn-lg btn-img-size btn-img-size-increase" value="+">+</button>
+              </div>
+            </div>
+            <div id="imagery-container">
+            </div>
+            <p style="font-size:9px;" >
+              <span id="imagery-timestamp"></span>
+              <br>
+              <span>&copy; 2018 Microsoft / Bolm</span>
+            </p>
+          </div>
+      </div>
+      <div class="row" style="padding-top:15px;">
+        <div class="answer-btns-container col-md-12">
+          <button type="button" class="btn btn-primary btn-lg btn-nav btn-nav-previous" value="Previous">Previous</button>
+          <button type="button" class="btn btn-secondary btn-lg btn-nav btn-nav-next" value="Next">Next</button>
+        </div>
+      </div>
+    </div>
+
+
+    <script type="text/javascript">
+      var BING_API_KEY = 'XXXX';
+
+      var ANSWER_YES = 'Yes';
+      var ANSWER_NO = 'No';
+      var ANSWER_BAD_IMAGE = 'Bad Image';
+
+      var KEY_DATA = 'data';
+
+      var KEY_YES = 'yes';
+      var KEY_NO = 'no';
+      var KEY_BAD_IMAGE = 'bad';
+
+      var KEY_ID = 'id';
+      var KEY_TASK_ID = 'task_id';
+      var KEY_INFO = 'info';
+      var KEY_IMG_URL = 'img_url';
+      var KEY_IMG_URL_SUBDOMAIN = 'img_url_subdomain';
+      var KEY_LAT = 'lat';
+      var KEY_LNG = 'lng';
+      var KEY_TILES_X = 'tiles_x';
+      var KEY_TILES_Y = 'tiles_y';
+
+      var threshold = 2;
+      var img_height = null; // Custom image height.
+      var task_run_view_index = 0;
+      var task_info_dict = {};
+      var task_run_dict = {};
+      var filtered_task_runs = {}
+
+      function handleTaskInfoCsvFile(files){
+        task_info_dict = {};
+
+        // Process CSV file.
+        Papa.parse(files[0], {
+          header: true,
+          skipEmptyLines: true, // Doesn't seem to work.
+          dynamicTyping: true,
+          step: function(row){
+            var data = row[KEY_DATA];
+
+            if(data['img_url'] == undefined){
+              // When does this happen?
+              console.log("Skipped an empty row. Investigate this.", row);
+            }else{
+              task_info_dict[data[KEY_TASK_ID]] = {};
+              task_info_dict[data[KEY_TASK_ID]][KEY_IMG_URL] = data[KEY_IMG_URL].replace('{subdomain}', data[KEY_IMG_URL_SUBDOMAIN]).replace('BING_API_KEY', BING_API_KEY);
+              task_info_dict[data[KEY_TASK_ID]][KEY_LAT] = data[KEY_LAT];
+              task_info_dict[data[KEY_TASK_ID]][KEY_LNG] = data[KEY_LNG];
+              task_info_dict[data[KEY_TASK_ID]][KEY_TILES_X] = data[KEY_TILES_X];
+              task_info_dict[data[KEY_TASK_ID]][KEY_TILES_Y] = data[KEY_TILES_Y];
+            }
+          },
+          complete: function() {
+            console.log("" + Object.keys(task_info_dict).length + " task infos loaded.");
+
+            // TODO: Enable second file selector.
+          }
+        });
+
+      }
+
+      function handleTaskRunCsvFile(files){
+        task_run_dict = {};
+        skip_header = true; // Use this flage because the header option for PapaParse does not work for this dataset.
+
+        // Process CSV file.
+        Papa.parse(files[0], {
+          header: false, // Papaparse fails miserable processing headers with some cells are blank.
+          skipEmptyLines: true, // Doesn't seem to work.
+          dynamicTyping: false, // Papaparse fails miserable at dynamic typing for this dataset.
+          step: function(row){
+
+            if(skip_header){
+              skip_header = false;
+            }else{
+
+              var data = row[KEY_DATA];
+
+              var task_run_id = parseInt(data[4]);
+              var task_id = parseInt(data[8]);
+              var answer = data[5];
+
+              if(task_id in task_run_dict){
+                if(answer === ANSWER_YES){
+                  task_run_dict[task_id][KEY_YES] = task_run_dict[task_id][KEY_YES] + 1;
+
+                }else if(answer === ANSWER_NO){
+                  task_run_dict[task_id][KEY_NO] = task_run_dict[task_id][KEY_NO] + 1;
+
+                }else if(answer === ANSWER_BAD_IMAGE){
+                  task_run_dict[task_id][KEY_BAD_IMAGE] = task_run_dict[task_id][KEY_BAD_IMAGE] + 1;
+
+                }else{
+                  var errorMsg = "Unexpected answer for input " + task_run_id  + " in task " +  task_id + ": " + answer;
+                  console.error(errorMsg);
+                  alert(errorMsg);
+                }
+              }else if(task_id in task_info_dict){
+
+
+                // Set the task info values retrieved from the task info only CSV.
+                task_run_dict[task_id] = {}
+                task_run_dict[task_id][KEY_INFO] = {}
+                task_run_dict[task_id][KEY_INFO][KEY_IMG_URL] = task_info_dict[task_id][KEY_IMG_URL]
+                task_run_dict[task_id][KEY_INFO][KEY_LAT] = task_info_dict[task_id][KEY_LAT]
+                task_run_dict[task_id][KEY_INFO][KEY_LNG] = task_info_dict[task_id][KEY_LNG]
+                task_run_dict[task_id][KEY_INFO][KEY_TILES_X] = task_info_dict[task_id][KEY_TILES_X]
+                task_run_dict[task_id][KEY_INFO][KEY_TILES_Y] = task_info_dict[task_id][KEY_TILES_Y]
+
+                if(answer === ANSWER_YES){
+                  task_run_dict[task_id][KEY_YES] = 1;
+                  task_run_dict[task_id][KEY_NO] = 0;
+                  task_run_dict[task_id][KEY_BAD_IMAGE] = 0;
+
+                }else if(answer === ANSWER_NO){
+                  task_run_dict[task_id][KEY_YES] = 0;
+                  task_run_dict[task_id][KEY_NO] = 1;
+                  task_run_dict[task_id][KEY_BAD_IMAGE] = 0;
+
+                }else if(answer === ANSWER_BAD_IMAGE){
+                  task_run_dict[task_id][KEY_YES] = 0;
+                  task_run_dict[task_id][KEY_NO] = 0;
+                  task_run_dict[task_id][KEY_BAD_IMAGE] = 1;
+
+                }else{
+                  var errorMsg = "Unexpected answer for input " + task_run_id  + " in task " +  task_id + ": " + answer;
+                  console.error(errorMsg);
+                  alert(errorMsg);
+                }
+              }else{
+                // When does this happen?
+                console.log("No task info for task id: " + task_id, row);
+              }
+            }
+          },
+          complete: function(results) {
+            console.log("" + Object.keys(task_run_dict).length + " tasks with at least one user submission.");
+
+            // Filter based on positive answers
+            filtered_task_runs[1] = Object.keys(task_run_dict).reduce(function (filtered, key) {
+                if (task_run_dict[key][KEY_YES] == 1) filtered[key] = task_run_dict[key];
+                return filtered;
+            }, {});
+
+            filtered_task_runs[2] = Object.keys(task_run_dict).reduce(function (filtered, key) {
+                if (task_run_dict[key][KEY_YES] == 2) filtered[key] = task_run_dict[key];
+                return filtered;
+            }, {});
+
+            filtered_task_runs[3] = Object.keys(task_run_dict).reduce(function (filtered, key) {
+                if (task_run_dict[key][KEY_YES] >= 3) filtered[key] = task_run_dict[key];
+                return filtered;
+            }, {});
+
+            renderTask(0);
+          }
+        });
+      }
+
+      function renderTask(task_index){
+        var first_key = Object.keys(filtered_task_runs[threshold])[task_index];
+        var first_task_run = filtered_task_runs[threshold][first_key];
+
+        // Each task is a 2D grid.
+        // Get the size of that grid in order to iterate over it.
+        var tiles_x = first_task_run[KEY_INFO][KEY_TILES_X];
+        var tiles_y = first_task_run[KEY_INFO][KEY_TILES_Y];
+
+        // Build an image HTML element for each tile in the grid.
+        var img_elem_dict = {};
+        for(var tile_id=0; tile_id < (tiles_x * tiles_y); tile_id++){
+
+          var img = $('<img class="imagery" id="imagery' + tile_id + '" data-index="' + tile_id + '" />');
+
+          // Build image URL.
+          var img_url = first_task_run[KEY_INFO][KEY_IMG_URL].replace('{tileId}', tile_id);
+
+          // Set HTML properties.
+          img.attr('src', img_url);
+          img.addClass('img-thumbnail img-responsive');
+
+
+          if(img_height == null){
+            // Change size of the image depending on whether the grid layout is 4x3 or 3x4.
+            if(tiles_x == 4){
+              // 4x3 (x=4 and y=3)
+              img.addClass('imagery-big');
+            }else{
+              // 3x4 (x=3 and y=4)
+              img.addClass('imagery-small');
+            }
+          }else{
+            img.css('height', img_height);
+          }
+
+
+          // Store image in an array
+          img_elem_dict['image' + tile_id] = img;
+        }
+
+        // Now that the image HTML elements have been built, append them to the container.
+        // This could have been done inline in the previous loop but we favoured copy and pasting
+        // already tested and validated logic from the task presenter.
+
+        // Start with clearing all images previously appended.
+        $('#imagery-container').empty();
+
+        // Track tile_id.
+        var tile_id = 0;
+
+        for(var y=0; y <tiles_y; y++){
+          for(var x=0; x<tiles_x; x++){
+
+            // If the tile grid is a 4x3 layout, then don't show the outer grids.
+            // This is because they are always mostly black and their areas are covered
+            // by neighboring tasks.
+            if(!((tiles_x == 4 && (tile_id+1) % 4 == 0) || (tiles_x == 4 && tile_id > 7))){
+            	$('#imagery-container').append(img_elem_dict['image' + tile_id]);
+            }
+
+            // Increment tile Id prioe to next iteration so that next image is fetched.
+            tile_id++;
+          }
+
+          // Next loop is the beginning of a new row of tiles.
+          // Skip line to start a new row.
+          if((tiles_x == 3 && tile_id <= 9) || tiles_x == 4){
+          	$('#imagery-container').append('<br>');
+          }
+        }
+      }
+
+      // TODO: replace with slider
+      $(".btn-img-size-decrease").click(function() {
+        img_height_int = parseInt($('.imagery').css('height').replace('px', '')) - 20;
+        img_height = img_height_int + "px";
+
+        // Don't let it get too small.
+        if(img_height_int >= 150){
+          $('.imagery').css('height', img_height);
+        }
+      });
+
+      $(".btn-img-size-increase").click(function() {
+        img_height = parseInt($('.imagery').css('height').replace('px', '')) + 20 + "px";
+        $('.imagery').css('height', img_height);
+      });
+
+      $(".btn-nav-previous").click(function() {
+        if(task_run_view_index > 0){
+          task_run_view_index--;
+          renderTask(task_run_view_index);
+
+        }else{
+          alert('No previous.');
+        }
+      });
+
+      $(".btn-nav-next").click(function() {
+        if(task_run_view_index < Object.keys(filtered_task_runs[threshold]).length){
+          task_run_view_index++;
+          renderTask(task_run_view_index);
+
+        }else{
+          alert('No next.');
+        }
+      });
+
+      // Making sure that the buttons are under the zoomed in tiles.
+      $("#imagery-container").mouseover(function() {
+        $( ".answer-btns-container").css('z-index', -1);
+      });
+
+      // Making sure that the buttons remain clickable.
+      $( "#imagery-container" ).mouseleave(function() {
+        $(".answer-btns-container").css('z-index', 1);
+      });
+
+
+    </script>
+  </body>
+</html>
