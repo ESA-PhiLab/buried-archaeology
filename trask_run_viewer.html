@@ -16,96 +16,281 @@
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous"></script>
 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.0.0/papaparse.min.js" ></script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></link>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous"></link>
 
+    <link rel="stylesheet"
+          href="https://pro.fontawesome.com/releases/v5.9.0/css/all.css">
+    </link>
+
     <style>
-      .imagery-big{
-         height: 175px;
+
+      .vertical-center-container {
+        height: 100%;
+        position: relative;
       }
 
-      .imagery-small{
-         height: 150px;
+      .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
       }
+
+      .slider-container{
+        width: 220px;
+        overflow: hidden; /* will contain if #first is longer than #second */
+      }
+      .slider-label {
+          padding-top:5px;
+          width: 75px;
+          float:left; /* add this */
+      }
+      .slider-slider {
+          padding-top:12px;
+          padding-left:75px;
+          width: 180px;
+      }
+
       .imagery {
-          transition: transform .2s; /* Animation */
-          border-width: 1px;
-          border-style: solid;
-          border-color: white;
-          border-radius: 0px;
-          padding: 0px;
+        /*transition: transform .2s;*/
+        border-width: 1px;
+        border-style: solid;
+        border-color: white;
+        border-radius: 0px;
+        padding: 0px;
       }
 
+      div.disabled{
+        pointer-events: none;
+        /* for "disabled" effect */
+        opacity: 0.5;
+      }
+
+      /* Absolute Center Spinner */
+      .loading {
+        position: fixed;
+        z-index: 999;
+        height: 2em;
+        width: 2em;
+        overflow: visible;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+      }
+
+      /* Transparent Overlay */
+      .loading:before {
+        content: '';
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.3);
+      }
+
+      /* :not(:required) hides these rules from IE9 and below */
+      .loading:not(:required) {
+        /* hide "loading..." text */
+        font: 0/0 a;
+        color: transparent;
+        text-shadow: none;
+        background-color: transparent;
+        border: 0;
+      }
+
+      .loading:not(:required):after {
+        content: '';
+        display: block;
+        font-size: 10px;
+        width: 1em;
+        height: 1em;
+        margin-top: -0.5em;
+        -webkit-animation: spinner 1500ms infinite linear;
+        -moz-animation: spinner 1500ms infinite linear;
+        -ms-animation: spinner 1500ms infinite linear;
+        -o-animation: spinner 1500ms infinite linear;
+        animation: spinner 1500ms infinite linear;
+        border-radius: 0.5em;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+        box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+      }
+
+      /* Animation */
+
+      @-webkit-keyframes spinner {
+        0% {
+          -webkit-transform: rotate(0deg);
+          -moz-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          -moz-transform: rotate(360deg);
+          -ms-transform: rotate(360deg);
+          -o-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      @-moz-keyframes spinner {
+        0% {
+          -webkit-transform: rotate(0deg);
+          -moz-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          -moz-transform: rotate(360deg);
+          -ms-transform: rotate(360deg);
+          -o-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      @-o-keyframes spinner {
+        0% {
+          -webkit-transform: rotate(0deg);
+          -moz-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          -moz-transform: rotate(360deg);
+          -ms-transform: rotate(360deg);
+          -o-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes spinner {
+        0% {
+          -webkit-transform: rotate(0deg);
+          -moz-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          -moz-transform: rotate(360deg);
+          -ms-transform: rotate(360deg);
+          -o-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      /*
       .imagery-sample {
-          transition: transform .2s; /* Animation */
+          transition: transform .2s;
       }
 
+      /*
       .imagery:hover{
-          transform: scale(2.5); /* (250% zoom) */
+          transform: scale(2.5);
           cursor: crosshair;
-      }
-
-      .imagery-sample:hover {
-          transform: scale(2); /* (200% zoom) */
-          cursor: crosshair;
-      }
+      }*/
     </style>
   </head>
 
   <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="container-fluid" align="center">
-      <div>
-        <div class="col-md-2">
-
-        </div>
-        <div class="col-md-4">
-          <div class="input-group">
-            <div class="custom-file" align="left">
-              <input type="file" class="custom-file-input" id="file-task-info"
-                onchange="handleTaskInfoCsvFile(this.files)">
-              <label class="custom-file-label" for="file-task-info">Upload task info file...</label>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="input-group">
-            <div class="custom-file" align="left">
-              <input type="file" class="custom-file-input" id="file-task-runs"
-                onchange="handleTaskRunCsvFile(this.files)">
-              <label class="custom-file-label" for="file-task-runs">Upload task runs file...</label>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-2"></div>
-      </div>
-      <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="answer-btns-container col-md-12">
-                Image tile size:
-                <button type="button" class="btn btn-secondary btn-lg btn-img-size btn-img-size-decrease" value="-">-</button>
-                <button type="button" class="btn btn-secondary btn-lg btn-img-size btn-img-size-increase" value="+">+</button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <div class="input-group">
+              <div class="custom-file" align="left">
+                <input type="file" class="custom-file-input" id="file-task-info"
+                  onchange="handleTaskInfoCsvFile(this.files)">
+                <label class="file-task-info-label custom-file-label" for="file-task-info">Upload task info file...</label>
               </div>
             </div>
+          </li>
+          <li class="nav-item">
+            <div class="input-group" style="padding-left:20px;">
+              <div class="custom-file" align="left">
+                <input type="file" class="custom-file-input" id="file-task-runs"
+                  onchange="handleTaskRunCsvFile(this.files)">
+                <label class="file-task-runs-label custom-file-label" for="file-task-runs">Upload task runs file...</label>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item">
+            <form style="padding-left:20px;">
+              <div class="form-group">
+                <select class="threshold-select form-control">
+                  <option>1</option>
+                  <option>2</option>
+                  <option selected>3+</option>
+                </select>
+              </div>
+            </form>
+          </li>
+          <li class="nav-item">
+            <div class="slider-container" style="padding-left:20px;">
+              <div class="slider-label">Tile size:</div>
+              <div class="slider-slider">
+                <div id="image-tile-size-slider"></div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="alert alert-primary alert-no-previous" role="alert" align="center" style="display:none;margin:0">
+      There are no more previous tasks.
+    </div>
+    <div class="alert alert-primary alert-no-next" role="alert" align="center" style="display:none;margin:0">
+      There are no more tasks left.
+    </div>
+    <div class="container-fluid" align="center">
+      <div class="row" style="height:100%">
+          <div class="col-sm-1 vertical-center-container" style="display:none;">
+            <div class="vertical-center">
+              <a class="btn btn-nav btn-nav-previous"
+                 style="font-size: 48px; color: Dodgerblue;"
+                 href="#">
+                <i class="fas fa-arrow-circle-left"></i>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-10">
             <div id="imagery-container">
             </div>
-            <p style="font-size:9px;" >
-              <span id="imagery-timestamp"></span>
-              <br>
+            <p calls="imagery-credit" style="font-size:9px;display:none" >
               <span>&copy; 2018 Microsoft / Bolm</span>
             </p>
           </div>
-      </div>
-      <div class="row" style="padding-top:15px;">
-        <div class="answer-btns-container col-md-12">
-          <button type="button" class="btn btn-primary btn-lg btn-nav btn-nav-previous" value="Previous">Previous</button>
-          <button type="button" class="btn btn-secondary btn-lg btn-nav btn-nav-next" value="Next">Next</button>
-        </div>
+          <div class="col-sm-1 vertical-center-container" style="display:none;">
+            <div class="vertical-center">
+              <a class="btn btn-nav btn-nav-next"
+                 style="font-size: 48px; color: Dodgerblue;"
+                 href="#">
+                <i class="fas fa-arrow-circle-right"></i>
+              </a>
+            </div>
+          </div>
       </div>
     </div>
 
@@ -133,14 +318,48 @@
       var KEY_TILES_X = 'tiles_x';
       var KEY_TILES_Y = 'tiles_y';
 
-      var threshold = 2;
+      var IMG_TILE_HEIGHT_DEFAULT = 160;
       var img_height = null; // Custom image height.
+
+      var threshold = 3;
+
       var task_run_view_index = 0;
       var task_info_dict = {};
       var task_run_dict = {};
-      var filtered_task_runs = {}
+      var filtered_task_runs = {};
+
+      $("#file-task-runs").prop('disabled', true);
+      $(".threshold-select").prop('disabled', true);
+      $(".slider-container").addClass('disabled');
+
+      $('.threshold-select').on('change', function() {
+        threshold = this.value === '3+' ? 3 : this.value;
+
+        // reset.
+        task_run_view_index = 0;
+
+        // rebuild task viewer slideshow.
+        renderTask(threshold, 0)
+
+      });
+
+      $("#image-tile-size-slider").slider({
+        orientation: "horizontal",
+        range: "min",
+        min: 0,
+        max: 200,
+        step: 20,
+        value: 0,
+        change: function( event, ui ) {
+          var height_increment = parseInt(ui.value);
+          img_height = IMG_TILE_HEIGHT_DEFAULT + height_increment;
+          $('.imagery').css('height', img_height + "px");
+        }
+      });
 
       function handleTaskInfoCsvFile(files){
+        $('.container-fluid').addClass("loading");
+
         task_info_dict = {};
 
         // Process CSV file.
@@ -167,12 +386,18 @@
             console.log("" + Object.keys(task_info_dict).length + " task infos loaded.");
 
             // TODO: Enable second file selector.
+            $(".file-task-info-label").html(files[0].name);
+            $("#file-task-runs").prop('disabled', false);
+
+            $('.container-fluid').removeClass("loading");
           }
         });
 
       }
 
       function handleTaskRunCsvFile(files){
+        $('.container-fluid').addClass("loading");
+
         task_run_dict = {};
         skip_header = true; // Use this flage because the header option for PapaParse does not work for this dataset.
 
@@ -210,7 +435,6 @@
                 }
               }else if(task_id in task_info_dict){
 
-
                 // Set the task info values retrieved from the task info only CSV.
                 task_run_dict[task_id] = {}
                 task_run_dict[task_id][KEY_INFO] = {}
@@ -247,7 +471,6 @@
             }
           },
           complete: function(results) {
-            console.log("" + Object.keys(task_run_dict).length + " tasks with at least one user submission.");
 
             // Filter based on positive answers
             filtered_task_runs[1] = Object.keys(task_run_dict).reduce(function (filtered, key) {
@@ -265,12 +488,25 @@
                 return filtered;
             }, {});
 
-            renderTask(0);
+            console.log("" + Object.keys(filtered_task_runs[1]).length + " tasks with 1 positive user submission.");
+            console.log("" + Object.keys(filtered_task_runs[2]).length + " tasks with 2 positive user submissions.");
+            console.log("" + Object.keys(filtered_task_runs[3]).length + " tasks with at least 3 positive user submissions.");
+
+            renderTask(3, 0);
+
+            $(".file-task-runs-label").html(files[0].name);
+            $(".threshold-select").prop('disabled', false);
+            $(".slider-container").removeClass('disabled');
+
+            $(".vertical-center-container").css('display', 'block');
+            $(".imagery-credit").css('display', 'block');
+
+            $('.container-fluid').removeClass("loading");
           }
         });
       }
 
-      function renderTask(task_index){
+      function renderTask(threshold, task_index){
         var first_key = Object.keys(filtered_task_runs[threshold])[task_index];
         var first_task_run = filtered_task_runs[threshold][first_key];
 
@@ -292,16 +528,9 @@
           img.attr('src', img_url);
           img.addClass('img-thumbnail img-responsive');
 
-
           if(img_height == null){
-            // Change size of the image depending on whether the grid layout is 4x3 or 3x4.
-            if(tiles_x == 4){
-              // 4x3 (x=4 and y=3)
-              img.addClass('imagery-big');
-            }else{
-              // 3x4 (x=3 and y=4)
-              img.addClass('imagery-small');
-            }
+              img_height = IMG_TILE_HEIGHT_DEFAULT;
+              img.css('height', img_height);
           }else{
             img.css('height', img_height);
           }
@@ -343,53 +572,61 @@
         }
       }
 
-      // TODO: replace with slider
-      $(".btn-img-size-decrease").click(function() {
-        img_height_int = parseInt($('.imagery').css('height').replace('px', '')) - 20;
-        img_height = img_height_int + "px";
+      function nextTask(){
+        if(task_run_view_index < Object.keys(filtered_task_runs[threshold]).length-1){
+          task_run_view_index++;
+          renderTask(threshold, task_run_view_index);
 
-        // Don't let it get too small.
-        if(img_height_int >= 150){
-          $('.imagery').css('height', img_height);
+        }else{
+          $(".alert-no-next").fadeTo(2000, 500).slideUp(500, function(){
+            $(".alert-no-next").slideUp(500);
+          });
         }
-      });
+      }
 
-      $(".btn-img-size-increase").click(function() {
-        img_height = parseInt($('.imagery').css('height').replace('px', '')) + 20 + "px";
-        $('.imagery').css('height', img_height);
-      });
-
-      $(".btn-nav-previous").click(function() {
+      function previousTask(){
         if(task_run_view_index > 0){
           task_run_view_index--;
-          renderTask(task_run_view_index);
+          renderTask(threshold, task_run_view_index);
 
         }else{
-          alert('No previous.');
+          $(".alert-no-previous").fadeTo(2000, 500).slideUp(500, function(){
+            $(".alert-no-previous").slideUp(500);
+          });
         }
-      });
+      }
 
       $(".btn-nav-next").click(function() {
-        if(task_run_view_index < Object.keys(filtered_task_runs[threshold]).length){
-          task_run_view_index++;
-          renderTask(task_run_view_index);
+        nextTask();
+      });
 
-        }else{
-          alert('No next.');
+
+      $(".btn-nav-previous").click(function() {
+        previousTask();
+      });
+
+      $('body').keypress(function(e) {
+        if(e.keyCode == 8 || e.keyCode == 37){
+          // user has pressed backspace or arrow left.
+          e.preventDefault();
+          previousTask();
+        }
+        if(e.keyCode == 32 || e.keyCode == 39){
+          // user has pressed space or arrow right
+          e.preventDefault();
+          nextTask();
         }
       });
 
       // Making sure that the buttons are under the zoomed in tiles.
       $("#imagery-container").mouseover(function() {
-        $( ".answer-btns-container").css('z-index', -1);
+        $( ".btn-nav").css('z-index', -1);
       });
 
       // Making sure that the buttons remain clickable.
       $( "#imagery-container" ).mouseleave(function() {
-        $(".answer-btns-container").css('z-index', 1);
+        $(".btn-nav").css('z-index', 1);
       });
-
-
     </script>
   </body>
 </html>
