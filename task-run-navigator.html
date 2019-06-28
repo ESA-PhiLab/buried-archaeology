@@ -21,6 +21,10 @@
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.0.0/papaparse.min.js" ></script>
 
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></link>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -254,10 +258,16 @@
               </div>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link link-bing-map" style="cursor: pointer;" target="_blank" href="#">
-              <i class="fas fa-map-marked-alt"></i>&nbsp;Bing Map</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle dropdown-toggle-locate" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-map-marked-alt"></i>&nbsp;Locate
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item link-bing-map" target="_blank" href="#">Bing Maps</a>
+              <a class="dropdown-item link-google-map" target="_blank" href="#">Google Maps</a>
+            </div>
           </li>
+        </li>
         </ul>
       </div>
     </nav>
@@ -305,6 +315,10 @@
       var BING_ZOOM_LEVEL = 17
       var BING_URL_PARAMS = "&lvl=" + BING_ZOOM_LEVEL + "&style=h&v=2&sV=2"
 
+      var GOOGLE_URL = "http://maps.google.com/maps"
+      var GOOGLE_ZOOM_LEVEL = 17
+      var GOOGLE_URL_PARAMS = "?z=" + GOOGLE_ZOOM_LEVEL + "&t=k&q=loc:"
+
       var ANSWER_YES = 'Yes';
       var ANSWER_NO = 'No';
       var ANSWER_BAD_IMAGE = 'Bad Image';
@@ -338,7 +352,7 @@
       $("#file-task-runs").prop('disabled', true);
       $(".threshold-select").prop('disabled', true);
       $(".slider-container").addClass('disabled');
-      $('.link-bing-map').addClass('disabled');
+      $('.dropdown-toggle-locate').addClass('disabled');
 
       $('.threshold-select').on('change', function() {
         threshold = this.value === '3+' ? 3 : this.value;
@@ -505,7 +519,7 @@
             $(".file-task-runs-label").html(files[0].name);
             $(".threshold-select").prop('disabled', false);
             $(".slider-container").removeClass('disabled');
-            $('.link-bing-map').removeClass('disabled');
+            $('.dropdown-toggle-locate').removeClass('disabled');
 
             $(".vertical-center-container").css('display', 'block');
             $(".imagery-credit").css('display', 'block');
@@ -580,12 +594,16 @@
           }
         }
 
-        // Reset Bing button to load new map location.
+        // Reset Bing and Google map links to load new map location.
         var lat = task_run[KEY_INFO][KEY_LAT];
         var lng = task_run[KEY_INFO][KEY_LNG];
         var bing_url = BING_URL + lat + "~" + lng + BING_URL_PARAMS;
+        var google_url = GOOGLE_URL + GOOGLE_URL_PARAMS + lat + "+" + lng
 
         $('.link-bing-map').attr('href', bing_url)
+        $('.link-google-map').attr('href', google_url)
+
+
       }
 
       function nextTask(){
