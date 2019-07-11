@@ -1,5 +1,16 @@
-# PyBossa EO Browser Imagery Task Generator
-There are twp PyBossa projects: one that uses Bing Maps bird's-eye imagery and another one that uses Sentinel optical imagery.
+# Buried Archaeology
+Buried Archaeology consists of two PyBossa projects: one that uses Bing Maps bird's-eye imagery and another one that uses Sentinel-2 optical imagery.
+
+## Background
+The purpose of the crowdsourcing projects are to systematically document the abundant cropmarks over two selected areas in the UK and Italy. This work has been carried out by researchers based in the newly created Phi-Lab of the European Space Agency. The two projects have been published in the web-based service “Crowdcrafting”, which uses the PYBOSSA Open Source framework for crowdsourcing.
+
+### UK
+Over the UK, advantage is taken of the exceptionally dry summer of 2018, when many cropmarks were revealed. Here users of the crowdsourcing app would view time series of Sentinel-2 imagery over a large part of the south of England to detect cropmarks through their evolution over the summer period.
+
+### Italy
+Over Italy, users view single images of very high resolution oblique air photos available in Bing Maps, to detect the abundant crop marks in the rapidly disappearing countryside surrounding the city of Rome, up to a 25 kilometer radius from the city centre. Archaeological crop marks in the Lazio area are usually of ancient Roman origin. They tend to have clear geometric patterns, revealing the foundations of buildings. Roman roads can be distinguished as very straight lines of parched vegetation (overlying ancient paving stones), with strips of greener vegetation on either side, where ditches used to be.
+
+![Buried Archaeology - Lazio Example](https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/buried-archaeology-all-lazio-examples.png)
 
 ## Task Generators
 The task generator scripts produce CSV files in which each row corresponds to a microtask. A CSV file is to be imported into a [PyBossa](https://pybossa.com/) project instance in order to create the tasks within that platform.
