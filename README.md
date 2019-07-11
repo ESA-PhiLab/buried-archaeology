@@ -35,7 +35,7 @@ The user interface that presents the task to the crowdsourced users. These are c
 Completed tasks are called ***Task Runs***. Task Runs can be downloaled from PyBossa as CSV files. The `process_task_runs.py` script processes those Task Run CSV files into results files, also in CSV. These result files group the task results based on following confidence thresholds:
 - All tasks with 1 positive answer.
 - All tasks with 2 positive answers.
-- All tasks with at least 3 positive anwers.
+- All tasks with at least 3 positive answers.
 
 **Note:** This is currently only implemented for the Bing Maps bird's-eye imagery project.
 
