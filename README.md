@@ -10,7 +10,7 @@ Over the UK, advantage is taken of the exceptionally dry summer of 2018, when ma
 ### Italy
 Over Italy, users view single images of very high resolution oblique air photos available in Bing Maps, to detect the abundant crop marks in the rapidly disappearing countryside surrounding the city of Rome, up to a 25 kilometer radius from the city centre. Archaeological crop marks in the Lazio area are usually of ancient Roman origin. They tend to have clear geometric patterns, revealing the foundations of buildings. Roman roads can be distinguished as very straight lines of parched vegetation (overlying ancient paving stones), with strips of greener vegetation on either side, where ditches used to be.
 
-![Buried Archaeology - Lazio Example](https://raw.githubusercontent.com/ESA-PhiLab/pybossa-eo-browser-imagery-microtasking/master/img/buried-archaeology-all-lazio-examples.png)
+![Buried Archaeology - Lazio Example](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/buried-archaeology-all-lazio-examples.png)
 
 ## Task Generators
 The task generator scripts produce CSV files in which each row corresponds to a microtask. A CSV file is to be imported into a [PyBossa](https://pybossa.com/) project instance in order to create the tasks within that platform.
