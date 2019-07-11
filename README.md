@@ -1,7 +1,7 @@
 # Buried Archaeology
 Buried Archaeology consists of two PyBossa projects: one that uses Bing Maps bird's-eye imagery and another one that uses Sentinel-2 optical imagery. The purpose of the crowdsourcing projects are to systematically document the abundant cropmarks over two selected areas in the UK and Italy.
 
-How Cropmarks are Caused by Underlying Archaelogy ([Image Source](https://www.slideshare.net/fruittingles2605/archaeological-survey-techniques)):
+How cropmarks are caused by underlying archaelogy ([Image Source](https://www.slideshare.net/fruittingles2605/archaeological-survey-techniques)):
 ![How Cropmarks are Caused by Underlying Archaelogy](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/how-cropmarks-are-caused-by-underlying-archaeology.png)
 
 ## Background
