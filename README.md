@@ -1,11 +1,11 @@
 # Buried Archaeology
-Buried Archaeology consists of two PyBossa projects: one that uses Bing Maps bird's-eye imagery and another one that uses Sentinel-2 optical imagery. The purpose of the crowdsourcing projects are to systematically document the abundant cropmarks over two selected areas in the UK and Italy.
+Buried Archaeology consists of two PyBossa projects: one that uses [Bing Maps bird's-eye](https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/birdseyev2) imagery and another one that uses [Sentinel-2](https://sentinel.esa.int/web/sentinel/missions/sentinel-2) optical imagery. The purpose of the crowdsourcing projects are to systematically document the abundant cropmarks over two selected areas in the UK and Italy.
 
 How cropmarks are caused by underlying archaelogy ([image source](https://www.slideshare.net/fruittingles2605/archaeological-survey-techniques)):
 ![How Cropmarks are Caused by Underlying Archaelogy](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/how-cropmarks-are-caused-by-underlying-archaeology.png)
 
 ## Background
-This work has been carried out by researchers based in the newly created Phi-Lab of the European Space Agency. The two projects have been published in the web-based service “Crowdcrafting”, which uses the PYBOSSA Open Source framework for crowdsourcing.
+This work has been carried out by researchers based in the newly created [Phi-Lab](http://blogs.esa.int/philab/) of the [European Space Agency](https://www.esa.int/ESA). The two projects have been published in the web-based service ***Crowdcrafting***, which uses the [PYBOSSA](https://pybossa.com/) Open Source framework for crowdsourcing.
 
 ### UK
 Over the UK, advantage is taken of the exceptionally dry summer of 2018, when many cropmarks were revealed. Here users of the crowdsourcing app would view time series of Sentinel-2 imagery over a large part of the south of England to detect cropmarks through their evolution over the summer period.
