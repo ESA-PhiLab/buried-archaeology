@@ -1,6 +1,21 @@
 # Buried Archaeology
 Buried Archaeology consists of two PyBossa projects: one that uses [Bing Maps bird's-eye](https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/birdseyev2) imagery and another one that uses [Sentinel-2](https://sentinel.esa.int/web/sentinel/missions/sentinel-2) optical imagery. The purpose of the crowdsourcing projects are to systematically document the abundant cropmarks over two selected areas in the UK and Italy.
 
+# How Can Buried Structures Be Detected?
+Archaeological features, such as buildings or earthworks, may be completely buried beneath the ground. However, their interaction with surface processes may enable them to be seen, particularly in images acquired from above.
+
+In dry periods, for example, vegetation growing at the surface may be forced to place deeper roots into the ground to find moisture. If a buried wall hinders root growth, the overlying vegetation will wilt. Conversely, a buried earthwork, such as an ancient moat or canal, may contain soil with increased moisture content. The roots of vegetation overlying the buried earthwork may therefore grow more abundantly:
+
+![Residues](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/residues-chris-stewart-01.png)
+
+This differential vegetation growth can sometimes be seen in images acquired from above.
+
+Even if there is no vegetation growing above buried structures, in some cases, traces of such structures can be brought to the surface by ploughing activity:
+
+![Residues](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/residues-chris-stewart-02.png)
+
+These conditions that cause buried archaeological features to be visible at the surface may not last long. Differential vegetation growth caused by buried structures may appear in dry periods, but following rainfall, vegetation under stress will recover, and traces of buried archaeology may disappear...
+
 How cropmarks are caused by underlying archaeology ([image source](https://www.slideshare.net/fruittingles2605/archaeological-survey-techniques)):
 ![How Cropmarks are Caused by Underlying Archaelogy](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/how-cropmarks-are-caused-by-underlying-archaeology.png)
 
