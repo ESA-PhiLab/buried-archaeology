@@ -22,19 +22,20 @@ Even if there is no vegetation growing above buried structures, in some cases, t
 
 These conditions that cause buried archaeological features to be visible at the surface may not last long. Differential vegetation growth caused by buried structures may appear in dry periods, but following rainfall, vegetation under stress will recover, and traces of buried archaeology may disappear...
 
-## Background
+# Background
 This work has been carried out by researchers based in the newly created [Phi-Lab](http://blogs.esa.int/philab/) of the [European Space Agency](https://www.esa.int/ESA). The two projects have been published in the web-based service ***Crowdcrafting***, which uses the [PYBOSSA](https://pybossa.com/) Open Source framework for crowdsourcing.
 
-### UK
+## UK
 Over the UK, advantage is taken of the exceptionally dry summer of 2018, when many cropmarks were revealed. Here users of the crowdsourcing app would view time series of Sentinel-2 imagery over a large part of the south of England to detect cropmarks through their evolution over the summer period.
 
 ![Buried Archaeology - UK Example](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/sentinel-2-time-series.png)
 
-### Italy
+## Italy
 Over Italy, users view single images of very high resolution oblique air photos available in Bing Maps, to detect the abundant crop marks in the rapidly disappearing countryside surrounding the city of Rome, up to a 25 kilometer radius from the city centre. Archaeological crop marks in the Lazio area are usually of ancient Roman origin. They tend to have clear geometric patterns, revealing the foundations of buildings. Roman roads can be distinguished as very straight lines of parched vegetation (overlying ancient paving stones), with strips of greener vegetation on either side, where ditches used to be.
 
 ![Buried Archaeology - Lazio Example](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/buried-archaeology-all-lazio-examples.png)
 
+# Technical Details
 ## Task Generators
 The task generator scripts produce CSV files in which each row corresponds to a microtask. A CSV file is to be imported into a [PyBossa](https://pybossa.com/) project instance in order to create the tasks within that platform.
 
