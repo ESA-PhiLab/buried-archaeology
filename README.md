@@ -1,6 +1,12 @@
 # Buried Archaeology
 Buried Archaeology consists of two PyBossa projects: one that uses [Bing Maps bird's-eye](https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/birdseyev2) imagery and another one that uses [Sentinel-2](https://sentinel.esa.int/web/sentinel/missions/sentinel-2) optical imagery. The purpose of the crowdsourcing projects are to systematically document the abundant cropmarks over two selected areas in the UK and Italy.
 
+# Cultural Heritag At Risk
+Rural land is rapidly disappearing due to urbanisation and industrial activity. Italy has an extremely rich cultural heritage, much of which lies buried beneath the ground. The pressure of construction is putting at risk many archaeological structures. Prior to development, archaeological surveys are required by law to ensure that no buried archaeological structures are present in the area to be developed. This is referred to as "rescue archaeology". Rescue archaeology is expensive and time consuming. The earlier it is carried out, the more efficiently construction activities can be planned. This project aims to provide additional information which may improve the efficiency of rescue archaeology, by detecting unknown archaeological structures in still undeveloped areas.
+
+This chart shows the decline in agricultural land in Italy, plotted in percentage of land area.
+![Decline in agricultural land in Italy](https://raw.githubusercontent.com/chrisstewartesa/ArchaeologyRome/master/italy-agricultural-land-percent-of-land-area-wb-data.png)
+
 # How Can Buried Structures Be Detected?
 Archaeological features, such as buildings or earthworks, may be completely buried beneath the ground. However, their interaction with surface processes may enable them to be seen, particularly in images acquired from above.
 
