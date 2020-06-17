@@ -243,9 +243,9 @@
             <form style="padding-left:20px;">
               <div class="form-group">
                 <select class="threshold-select form-control">
-                  <option>1</option>
+                  <option selected>1</option>
                   <option>2</option>
-                  <option selected>3+</option>
+                  <option>3+</option>
                 </select>
               </div>
             </form>
@@ -272,6 +272,9 @@
       </div>
     </nav>
 
+    <div class="alert alert-danger alert-no-task-run-with-requested-threshold" role="alert" align="center" style="display:none;margin:0">
+      There are no tasks with the requested threshold.
+    </div>
     <div class="alert alert-primary alert-no-previous" role="alert" align="center" style="display:none;margin:0">
       There are no more previous tasks.
     </div>
@@ -342,7 +345,7 @@
       var IMG_TILE_HEIGHT_DEFAULT = 160;
       var img_height = null; // Custom image height.
 
-      var threshold = 3;
+      var threshold = 1;
 
       var task_run_view_index = 0;
       var task_info_dict = {};
@@ -355,7 +358,7 @@
       $('.dropdown-toggle-locate').addClass('disabled');
 
       $('.threshold-select').on('change', function() {
-        threshold = this.value === '3+' ? 3 : this.value;
+        threshold = this.value === '1' ? 1 : this.value;
 
         // reset.
         task_run_view_index = 0;
@@ -514,7 +517,7 @@
             console.log("" + Object.keys(filtered_task_runs[2]).length + " tasks with 2 positive user submissions.");
             console.log("" + Object.keys(filtered_task_runs[3]).length + " tasks with at least 3 positive user submissions.");
 
-            renderTask(3, 0);
+            renderTask(1, 0);
 
             $(".file-task-runs-label").html(files[0].name);
             $(".threshold-select").prop('disabled', false);
@@ -530,79 +533,92 @@
       }
 
       function renderTask(threshold, task_index){
-        var task_run_id = Object.keys(filtered_task_runs[threshold])[task_index];
-        var task_run = filtered_task_runs[threshold][task_run_id];
 
-        // Each task is a 2D grid.
-        // Get the size of that grid in order to iterate over it.
-        var tiles_x = task_run[KEY_INFO][KEY_TILES_X];
-        var tiles_y = task_run[KEY_INFO][KEY_TILES_Y];
+        // Check if there are task runs with the given threshold.
+        if($.isEmptyObject(filtered_task_runs[threshold])){
+          // If not let the user know.
+          $(".alert-no-task-run-with-requested-threshold").fadeTo(2000, 500).slideUp(500, function(){
+            $(".alert-no-task-run-with-requested-threshold").slideUp(500);
+          });
 
-        // Build an image HTML element for each tile in the grid.
-        var img_elem_dict = {};
-        for(var tile_id=0; tile_id < (tiles_x * tiles_y); tile_id++){
+        }else{
+          // There are task runs with the given threshold.
+          // Create gallery to navigate through task runs with the same threshold.
 
-          var img = $('<img class="imagery" id="imagery' + tile_id + '" data-index="' + tile_id + '" />');
+          // Get the first task run and display it.
+          var task_run_id = Object.keys(filtered_task_runs[threshold])[task_index];
+          var task_run = filtered_task_runs[threshold][task_run_id];
 
-          // Build image URL.
-          var img_url = task_run[KEY_INFO][KEY_IMG_URL].replace('{tileId}', tile_id);
+          // Each task is a 2D grid.
+          // Get the size of that grid in order to iterate over it.
+          var tiles_x = task_run[KEY_INFO][KEY_TILES_X];
+          var tiles_y = task_run[KEY_INFO][KEY_TILES_Y];
 
-          // Set HTML properties.
-          img.attr('src', img_url);
-          img.addClass('img-thumbnail img-responsive');
+          // Build an image HTML element for each tile in the grid.
+          var img_elem_dict = {};
+          for(var tile_id=0; tile_id < (tiles_x * tiles_y); tile_id++){
 
-          if(img_height == null){
-              img_height = IMG_TILE_HEIGHT_DEFAULT;
+            var img = $('<img class="imagery" id="imagery' + tile_id + '" data-index="' + tile_id + '" />');
+
+            // Build image URL.
+            var img_url = task_run[KEY_INFO][KEY_IMG_URL].replace('{tileId}', tile_id);
+
+            // Set HTML properties.
+            img.attr('src', img_url);
+            img.addClass('img-thumbnail img-responsive');
+
+            if(img_height == null){
+                img_height = IMG_TILE_HEIGHT_DEFAULT;
+                img.css('height', img_height);
+            }else{
               img.css('height', img_height);
-          }else{
-            img.css('height', img_height);
-          }
-
-
-          // Store image in an array
-          img_elem_dict['image' + tile_id] = img;
-        }
-
-        // Now that the image HTML elements have been built, append them to the container.
-        // This could have been done inline in the previous loop but we favoured copy and pasting
-        // already tested and validated logic from the task presenter.
-
-        // Start with clearing all images previously appended.
-        $('#imagery-container').empty();
-
-        // Track tile_id.
-        var tile_id = 0;
-
-        for(var y=0; y <tiles_y; y++){
-          for(var x=0; x<tiles_x; x++){
-
-            // If the tile grid is a 4x3 layout, then don't show the outer grids.
-            // This is because they are always mostly black and their areas are covered
-            // by neighboring tasks.
-            if(!((tiles_x == 4 && (tile_id+1) % 4 == 0) || (tiles_x == 4 && tile_id > 7))){
-            	$('#imagery-container').append(img_elem_dict['image' + tile_id]);
             }
 
-            // Increment tile Id prioe to next iteration so that next image is fetched.
-            tile_id++;
+
+            // Store image in an array
+            img_elem_dict['image' + tile_id] = img;
           }
 
-          // Next loop is the beginning of a new row of tiles.
-          // Skip line to start a new row.
-          if((tiles_x == 3 && tile_id <= 9) || tiles_x == 4){
-          	$('#imagery-container').append('<br>');
+          // Now that the image HTML elements have been built, append them to the container.
+          // This could have been done inline in the previous loop but we favoured copy and pasting
+          // already tested and validated logic from the task presenter.
+
+          // Start with clearing all images previously appended.
+          $('#imagery-container').empty();
+
+          // Track tile_id.
+          var tile_id = 0;
+
+          for(var y=0; y <tiles_y; y++){
+            for(var x=0; x<tiles_x; x++){
+
+              // If the tile grid is a 4x3 layout, then don't show the outer grids.
+              // This is because they are always mostly black and their areas are covered
+              // by neighboring tasks.
+              if(!((tiles_x == 4 && (tile_id+1) % 4 == 0) || (tiles_x == 4 && tile_id > 7))){
+              	$('#imagery-container').append(img_elem_dict['image' + tile_id]);
+              }
+
+              // Increment tile Id prioe to next iteration so that next image is fetched.
+              tile_id++;
+            }
+
+            // Next loop is the beginning of a new row of tiles.
+            // Skip line to start a new row.
+            if((tiles_x == 3 && tile_id <= 9) || tiles_x == 4){
+            	$('#imagery-container').append('<br>');
+            }
           }
+
+          // Reset Bing and Google map links to load new map location.
+          var lat = task_run[KEY_INFO][KEY_LAT];
+          var lng = task_run[KEY_INFO][KEY_LNG];
+          var bing_url = BING_URL + lat + "~" + lng + BING_URL_PARAMS;
+          var google_url = GOOGLE_URL + GOOGLE_URL_PARAMS + lat + "+" + lng
+
+          $('.link-bing-map').attr('href', bing_url)
+          $('.link-google-map').attr('href', google_url)
         }
-
-        // Reset Bing and Google map links to load new map location.
-        var lat = task_run[KEY_INFO][KEY_LAT];
-        var lng = task_run[KEY_INFO][KEY_LNG];
-        var bing_url = BING_URL + lat + "~" + lng + BING_URL_PARAMS;
-        var google_url = GOOGLE_URL + GOOGLE_URL_PARAMS + lat + "+" + lng
-
-        $('.link-bing-map').attr('href', bing_url)
-        $('.link-google-map').attr('href', google_url)
-
 
       }
 
