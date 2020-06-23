@@ -49,7 +49,7 @@ def main():
 
 
     # Open CSV file to write task rows into.
-    with open('tasks/tasks_sentinel.csv', mode='w') as tasks_csv_file:
+    with open('../tasks/tasks_sentinel.csv', mode='w') as tasks_csv_file:
 
         # Create CSV Writer and write header.
         field_names = ['img_url', 'xmin', 'ymin', 'xmax', 'ymax', 'lat', 'lng', 'time1', 'time2', 'time3', 'time4']

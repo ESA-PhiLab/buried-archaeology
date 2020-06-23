@@ -36,29 +36,66 @@ Over Italy, users view single images of very high resolution oblique air photos 
 ![Buried Archaeology - Lazio Example](https://raw.githubusercontent.com/ESA-PhiLab/buried-archaeology/master/img/buried-archaeology-all-lazio-examples.png)
 
 # Technical Details
-## Task Generators
+## Scripts
+There are python scripts to generate the task CSV files as well as to process the task runs (i.e. the answers to the tasks).
+
+### Prerequisite
+Use Python 3 and install the required python packages into a virtual environment. In linux based system:
+
+```
+cd scripts
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
+### Task Generators
 The task generator scripts produce CSV files in which each row corresponds to a microtask. A CSV file is to be imported into a [PyBossa](https://pybossa.com/) project instance in order to create the tasks within that platform.
 
-- `task_generator_bing_birdseye.py`: Generates the microtask CSV file that utilizes Bing Maps bird's-eye imagery. 
+- `task_generator_bing_birdseye.py`: Generates the microtask CSV file that utilizes Bing Maps bird's-eye imagery.
 - `task_generator_sentinel.py`: Generates the microtask CSV file that utilizes Sentinel optical imagery.
 
 The imagery URLs are generated based on the following inputs:
 - Bounding box of the project's area of interest (latitude and longitude bounds).
 - Imagery dimensions for a task (i.e. x and y lengths).
 
-## Task Presenters
-The user interface that presents the task to the crowdsourced users. These are crowdsourcing project specific HTML files that are copied into PyBossa when creating the project.
+To run the Bing Maps bird's-eye task generator:
 
-- `task_presenter_bing_birdseye.html`: Task Presenter for the PyBossa project that uses Bing Maps bird's-eye imagery. 
-- `task_presenter_sentinel.html`: Task Presenter for the PyBossa project that uses Sentinel optical imagery. 
+```
+cd scripts
+source venv/bin/activate
+python3 task_generator_bing_birdseye.py
+```
 
-## Task Run Processors
-Completed tasks are called ***Task Runs***. Task Runs can be downloaled from PyBossa as CSV files. The `process_task_runs.py` script processes those Task Run CSV files into results files, also in CSV. These result files group the task results based on following confidence thresholds:
+To run the Sentinel bird's-eye task generator:
+
+```
+cd scripts
+source venv/bin/activate
+python3 task_generator_sentinel.py
+```
+
+### Task Run Processors
+Completed tasks are called ***Task Runs***. Task Runs can be downloaded from PyBossa as CSV files. The `process_task_runs.py` script processes those Task Run CSV files into results files, also in CSV. These result files group the task results based on following confidence thresholds:
 - All tasks with 1 positive answer.
 - All tasks with 2 positive answers.
 - All tasks with at least 3 positive answers.
 
 **Note:** This is currently only implemented for the Bing Maps bird's-eye imagery project.
+
+To process the task runs, first download the latest `\*_task_info_only.csv` and `\*_task_run.csv` files from the PyBossa admin dashboard and save them into the project's `task_runs` directory before running the `process_task_runs.py` script:
+
+```
+cd scripts
+source venv/bin/activate
+python3 process_task_runs.py
+```
+
+## Task Presenters
+The user interface that presents the task to the crowdsourced users. These are crowdsourcing project specific HTML files that are copied into PyBossa when creating the project.
+
+- `task_presenter_bing_birdseye.html`: Task Presenter for the PyBossa project that uses Bing Maps bird's-eye imagery.
+- `task_presenter_sentinel.html`: Task Presenter for the PyBossa project that uses Sentinel optical imagery.
 
 ## Task Run Navigator
 A simple HTML page to visually navigate through the Task results and filter them based on confidence thresholds.

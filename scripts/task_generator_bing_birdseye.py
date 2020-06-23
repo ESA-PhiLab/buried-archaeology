@@ -36,7 +36,7 @@ def get_ground_resolution(latitude):
 def main():
 
     # Open CSV file to write task rows into.
-    with open('tasks/tasks_bing_birdseye.csv', mode='w') as tasks_csv_file, open('tasks/tasks_bing_no_birdseye_available.csv', mode='w') as tasks_no_birdseye_csv_file:
+    with open('../tasks/tasks_bing_birdseye.csv', mode='w') as tasks_csv_file, open('../tasks/tasks_bing_no_birdseye_available.csv', mode='w') as tasks_no_birdseye_csv_file:
         # Create CSV Writer and write header.
         task_field_names = ['img_url', 'img_url_subdomain', 'lat', 'lng', 'tiles_x', 'tiles_y', 'img_height', 'img_width', 'start_date', 'end_date']
         task_writer = csv.DictWriter(tasks_csv_file, fieldnames=task_field_names, lineterminator = '\n')
