@@ -1,6 +1,5 @@
 <html>
   <head>
-    <title>Buried Archaeology</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes" />
@@ -243,6 +242,7 @@
             <form style="padding-left:20px;">
               <div class="form-group">
                 <select class="threshold-select form-control">
+                  <option>0</option>
                   <option selected>1</option>
                   <option>2</option>
                   <option>3+</option>
@@ -257,6 +257,12 @@
                 <div id="image-tile-size-slider"></div>
               </div>
             </div>
+          </li>
+          <li class="nav-item" style="width: 100px;">
+            <div class="task-id-value" style="padding-top: 5px;"></div>
+          </li>
+          <li class="nav-item" style="width: 100px;">
+            <div class="task-counter-label" style="padding-top: 5px;"></div>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle dropdown-toggle-locate" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -498,6 +504,11 @@
           complete: function(results) {
 
             // Filter based on positive answers
+            filtered_task_runs[0] = Object.keys(task_run_dict).reduce(function (filtered, key) {
+                if (task_run_dict[key][KEY_YES] == 0) filtered[key] = task_run_dict[key];
+                return filtered;
+            }, {});
+
             filtered_task_runs[1] = Object.keys(task_run_dict).reduce(function (filtered, key) {
                 if (task_run_dict[key][KEY_YES] == 1) filtered[key] = task_run_dict[key];
                 return filtered;
@@ -513,6 +524,7 @@
                 return filtered;
             }, {});
 
+            console.log("" + Object.keys(filtered_task_runs[0]).length + " tasks with no positive user submission.");
             console.log("" + Object.keys(filtered_task_runs[1]).length + " tasks with 1 positive user submission.");
             console.log("" + Object.keys(filtered_task_runs[2]).length + " tasks with 2 positive user submissions.");
             console.log("" + Object.keys(filtered_task_runs[3]).length + " tasks with at least 3 positive user submissions.");
@@ -618,6 +630,13 @@
 
           $('.link-bing-map').attr('href', bing_url)
           $('.link-google-map').attr('href', google_url)
+
+          
+          // Update task id.
+          $('.task-id-value').text("Task #" + task_run_id);
+
+          // Update task counter.
+          $('.task-counter-label').text((task_index +1) + "/" + Object.keys(filtered_task_runs[threshold]).length);
         }
 
       }
@@ -655,7 +674,19 @@
         previousTask();
       });
 
-      $('body').keypress(function(e) {
+      // Making sure that the buttons are under the zoomed in tiles.
+      $("#imagery-container").mouseover(function() {
+        $( ".btn-nav").css('z-index', -1);
+      });
+
+      // Making sure that the buttons remain clickable.
+      $( "#imagery-container" ).mouseleave(function() {
+        $(".btn-nav").css('z-index', 1);
+      });
+
+      // Navigate using keys.
+      $(document).ready(function() {
+        $(this).keydown(function(e) {
         if(e.keyCode == 8 || e.keyCode == 37){
           // user has pressed backspace or arrow left.
           e.preventDefault();
@@ -667,15 +698,6 @@
           nextTask();
         }
       });
-
-      // Making sure that the buttons are under the zoomed in tiles.
-      $("#imagery-container").mouseover(function() {
-        $( ".btn-nav").css('z-index', -1);
-      });
-
-      // Making sure that the buttons remain clickable.
-      $( "#imagery-container" ).mouseleave(function() {
-        $(".btn-nav").css('z-index', 1);
       });
     </script>
   </body>
